@@ -1,0 +1,3798 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>澤川屋 POS</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="澤川屋 POS">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#2b3fa0">
+    <!-- App 圖示（內嵌 SVG，群青底白色「澤」字）-->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' rx='40' fill='%232b3fa0'/%3E%3Ctext x='90' y='124' font-size='100' font-family='sans-serif' fill='white' text-anchor='middle'%3E%E6%BE%A4%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' rx='14' fill='%232b3fa0'/%3E%3Ctext x='32' y='45' font-size='36' font-family='sans-serif' fill='white' text-anchor='middle'%3E%E6%BE%A4%3C/text%3E%3C/svg%3E">
+    <!-- PWA Web App Manifest（內嵌 data:URI，用 base64 避免巢狀百分比編碼衝突）。
+         ⚠ start_url / scope 寫死成 github.io 子路徑 /pos/；日後若換 host（如改回 Netlify 或自訂網域）務必同步更新此 manifest，否則「安裝應用程式」會失效或開錯頁。
+         來源 JSON：name/short_name=澤川屋 POS, display=standalone, theme=#2b3fa0, icons=192/512 內嵌 SVG。 -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi5r6k5bed5bGLIFBPUyIsInNob3J0X25hbWUiOiLmvqTlt53lsYsgUE9TIiwic3RhcnRfdXJsIjoiaHR0cHM6Ly9zYXdha2F3YXlhOTM1LmdpdGh1Yi5pby9wb3MvIiwic2NvcGUiOiJodHRwczovL3Nhd2FrYXdheWE5MzUuZ2l0aHViLmlvL3Bvcy8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsIm9yaWVudGF0aW9uIjoicG9ydHJhaXQiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzJiM2ZhMCIsInRoZW1lX2NvbG9yIjoiIzJiM2ZhMCIsImxhbmciOiJ6aC1IYW50IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB3aWR0aD0nMTkyJyBoZWlnaHQ9JzE5MiclM0UlM0NyZWN0IHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyByeD0nNDInIGZpbGw9JyUyMzJiM2ZhMCcvJTNFJTNDdGV4dCB4PSc5NicgeT0nMTMyJyBmb250LXNpemU9JzEwOCcgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZpbGw9J3doaXRlJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyUzRSVFNiVCRSVBNCUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSJ9LHsic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyUzRSUzQ3JlY3Qgd2lkdGg9JzUxMicgaGVpZ2h0PSc1MTInIHJ4PScxMTInIGZpbGw9JyUyMzJiM2ZhMCcvJTNFJTNDdGV4dCB4PScyNTYnIHk9JzM1MicgZm9udC1zaXplPScyODgnIGZvbnQtZmFtaWx5PSdzYW5zLXNlcmlmJyBmaWxsPSd3aGl0ZScgdGV4dC1hbmNob3I9J21pZGRsZSclM0UlRTYlQkUlQTQlM0MvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCIsInB1cnBvc2UiOiJhbnkgbWFza2FibGUifV19">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --ink-soft: #6b6b6b;
+            --ink-faint: #9a9a9a;
+            --line: #e4e1d8;
+            --line-soft: #efece4;
+            --paper: #faf8f3;
+            --card: #ffffff;
+            --accent: #2b3fa0;
+            /* 群青色 */
+            --accent-soft: #e9ebf7;
+            --accent-ink: #1e2c78;
+            --gold: #b8860b;
+            --warn-soft: #fdf0e4;
+            --warn-ink: #9a5410;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --tap: 56px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-top: env(safe-area-inset-top, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            font-size: 16px;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* iOS Safari：非 <button> 的可點 div（背景遮罩、購物車 bar/把手）必須有 cursor:pointer，
+           否則 click 事件在 iOS 上不會觸發。順手關掉點擊灰色閃光。 */
+        .cart-bar,
+        .cart-handle,
+        .overlay,
+        .scrim {
+            cursor: pointer;
+        }
+
+        button,
+        .cart-bar,
+        .cart-handle,
+        .overlay,
+        .scrim {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .sheet {
+            cursor: default;
+        }
+
+        .qty-val,
+        .ord-check {
+            touch-action: manipulation;
+        }
+
+        /* ===== 版面骨架 ===== */
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            padding-top: calc(10px + var(--safe-top));
+            background: var(--card);
+            border-bottom: 1px solid var(--line);
+            flex-shrink: 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand .mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+        }
+
+        .net {
+            font-size: 12px;
+            color: var(--accent-ink);
+            background: var(--accent-soft);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .net.off {
+            color: var(--warn-ink);
+            background: var(--warn-soft);
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* 左側分類欄 */
+        .cats {
+            width: 96px;
+            background: var(--card);
+            border-right: 1px solid var(--line);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .cat {
+            width: 100%;
+            padding: 16px 6px;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.35;
+            color: var(--ink-soft);
+            border-left: 3px solid transparent;
+            border-bottom: 1px solid var(--line-soft);
+            font-weight: 600;
+        }
+
+        .cat.active {
+            color: var(--accent-ink);
+            background: var(--accent-soft);
+            border-left-color: var(--accent);
+        }
+
+        /* 中間商品區 */
+        .menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .menu-hd {
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin: 0 0 10px;
+            font-weight: 600;
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* 橫條商品按鈕：左名稱、右價格，貼近紙本菜單 */
+        .rowtile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            width: 100%;
+            min-height: 56px;
+            transition: transform .08s, border-color .15s, background .15s;
+        }
+
+        .rowtile:active {
+            transform: scale(.99);
+            background: var(--line-soft);
+        }
+
+        .rowtile .nm {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rowtile .pr {
+            font-size: 16px;
+            color: var(--accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rowtile.in-cart {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+
+        .rowtile .chev {
+            color: var(--ink-faint);
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .rowtile .rbadge {
+            min-width: 24px;
+            height: 24px;
+            padding: 0 7px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-grid;
+            place-items: center;
+        }
+
+        /* 右側購物車 */
+        .cart {
+            width: 264px;
+            background: var(--card);
+            border-left: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .cart-hd {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cart-hd .ttl {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .cart-hd .no {
+            font-size: 13px;
+            color: var(--ink-faint);
+            font-weight: 400;
+        }
+
+        .cart-hd .clear {
+            font-size: 12px;
+            color: var(--ink-faint);
+            padding: 4px 8px;
+        }
+
+        .cart-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 10px;
+        }
+
+        .cart-empty {
+            color: var(--ink-faint);
+            font-size: 14px;
+            text-align: center;
+            padding: 40px 12px;
+        }
+
+        .credit-bar {
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            margin: 6px 0 10px;
+            line-height: 1.4;
+        }
+
+        .credit-bar.ok {
+            background: var(--accent-soft);
+            color: var(--accent-ink);
+        }
+
+        .credit-bar.warn {
+            background: var(--warn-soft);
+            color: var(--warn-ink);
+        }
+
+        .line {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .line-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .line-nm {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .line-sub {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .line-amt {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .line-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .qbtn {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+            color: var(--ink);
+            background: var(--paper);
+        }
+
+        .qbtn:active {
+            background: var(--line-soft);
+        }
+
+        .qnum {
+            font-size: 15px;
+            font-weight: 700;
+            min-width: 22px;
+            text-align: center;
+        }
+
+        .line-del {
+            margin-left: auto;
+            color: var(--ink-faint);
+            font-size: 18px;
+            padding: 6px;
+        }
+
+        .cart-foot {
+            border-top: 1px solid var(--line);
+            padding: 12px 14px;
+        }
+
+        .ft-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .ft-row.disc {
+            color: var(--accent-ink);
+        }
+
+        .ft-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 8px 0 12px;
+        }
+
+        .ft-total .lbl {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .ft-total .val {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: var(--tap);
+            background: var(--accent);
+            color: #fff;
+            border-radius: var(--radius);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .btn-primary:active {
+            background: var(--accent-ink);
+        }
+
+        .btn-primary:disabled {
+            background: var(--line);
+            color: var(--ink-faint);
+        }
+
+        /* ===== 彈窗 ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(20, 20, 20, .5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 12px;
+        }
+
+        .overlay.show {
+            display: flex;
+        }
+
+        .sheet {
+            width: 100%;
+            max-width: 460px;
+            background: var(--card);
+            border-radius: 20px;
+            max-height: 85dvh;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: pop .2s ease-out;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(.96);
+                opacity: .4;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .sheet-hd {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .sheet-hd .nm {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .sheet-hd .pr {
+            font-size: 14px;
+            color: var(--accent);
+            margin-top: 3px;
+            font-weight: 600;
+        }
+
+        .sheet-x {
+            font-size: 24px;
+            color: var(--ink-faint);
+            padding: 2px 6px;
+        }
+
+        .sheet-body {
+            padding: 16px 18px;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sheet-foot {
+            padding: 12px 18px calc(12px + var(--safe-bottom));
+            border-top: 1px solid var(--line);
+            flex-shrink: 0;
+        }
+
+        .sec-lbl {
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin: 0 0 8px;
+            font-weight: 600;
+        }
+
+        .mods {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        /* 加購份數列：左側名稱價格，右側 +/− 份數 */
+        .mod-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+        }
+
+        .mod-row.on {
+            border: 2px solid var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .mod-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mod-nm {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .mod-pr {
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .mod-row.on .mod-pr {
+            color: var(--accent-ink);
+        }
+
+        .mod-stepper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mstep {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            color: var(--ink);
+            background: var(--paper);
+        }
+
+        .mstep:active:not(:disabled) {
+            background: var(--line-soft);
+        }
+
+        .mstep:disabled {
+            opacity: .3;
+        }
+
+        .mod-q {
+            font-size: 17px;
+            font-weight: 700;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .opts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .opt {
+            padding: 14px 8px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .opt.on {
+            border: 2px solid var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent-ink);
+        }
+
+        .qty-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            margin: 6px 0 4px;
+        }
+
+        .qty-big {
+            width: 58px;
+            height: 58px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            font-size: 26px;
+            color: var(--ink);
+            background: var(--paper);
+        }
+
+        .qty-big.plus {
+            border: 2px solid var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent-ink);
+        }
+
+        .qty-big:active {
+            transform: scale(.94);
+        }
+
+        .qty-val {
+            font-size: 30px;
+            font-weight: 800;
+            min-width: 56px;
+            text-align: center;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .qty-val.editable {
+            border-bottom: 2px dashed var(--line);
+            cursor: text;
+        }
+
+        .add-btn {
+            width: 100%;
+            height: var(--tap);
+            background: var(--accent);
+            color: #fff;
+            border-radius: var(--radius);
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+        }
+
+        .add-btn:active {
+            background: var(--accent-ink);
+        }
+
+        /* 數字鍵盤 */
+        .pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .key {
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            background: var(--card);
+        }
+
+        .key:active {
+            background: var(--line-soft);
+        }
+
+        .key.fn {
+            font-size: 14px;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+
+        /* 結帳 */
+        /* 應收 + 付款方式 並排 */
+        .due-pay-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+
+        .due-block {
+            flex: 1;
+            background: var(--paper);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .due-lbl {
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .due-amt {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .due-sub {
+            font-size: 11px;
+            color: var(--ink-faint);
+            margin-top: 2px;
+        }
+
+        .pay-mini-col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 112px;
+        }
+
+        .pay-mini {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 5px;
+        }
+
+        .pay-mini.on {
+            border: 2px solid var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent-ink);
+        }
+
+        .pay-mini .ic {
+            font-size: 15px;
+        }
+
+        /* 收現 / 找零 */
+        .cash-big {
+            background: var(--accent-soft);
+            border-radius: var(--radius-sm);
+            padding: 9px 16px;
+            margin-bottom: 9px;
+        }
+
+        .cash-big-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .cash-big-row+.cash-big-row {
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px solid rgba(43, 63, 160, .15);
+        }
+
+        .cash-big-lbl {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--accent-ink);
+        }
+
+        .cash-big-val {
+            font-size: 25px;
+            font-weight: 800;
+            color: var(--accent-ink);
+        }
+
+        .cash-big-row.change .cash-big-val {
+            color: #c0392b;
+        }
+
+        /* 快速金額 */
+        .quick-cash {
+            display: flex;
+            gap: 8px;
+            margin: 0 0 7px;
+        }
+
+        .qc {
+            flex: 1;
+            padding: 10px 4px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            background: var(--card);
+        }
+
+        .qc:active {
+            background: var(--line-soft);
+        }
+
+        /* 數字鍵盤 */
+        .cashpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .ckey {
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            background: var(--card);
+        }
+
+        .ckey:active {
+            background: var(--line-soft);
+        }
+
+        .ckey.fn {
+            font-size: 15px;
+            color: var(--ink-soft);
+        }
+
+        /* 折扣 */
+        .disc-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .chip {
+            padding: 10px 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chip.on {
+            border: 2px solid var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent-ink);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ink);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            z-index: 200;   /* 高於 overlay(100)，提示彈窗開著時也看得到 */
+            opacity: 0;
+            transition: opacity .2s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* ===== 新版偵測橫幅（部署後切回前景偵測到新版 → 點一下重載拿新版）===== */
+        .update-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 300;   /* 高於 toast(200)/overlay(100)，永遠看得到 */
+            background: var(--accent);
+            color: #fff;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            padding: calc(var(--safe-top) + 10px) 16px 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        /* ===== 底部購物車 bar（手機用，桌機隱藏）===== */
+        .cart-bar {
+            display: none;
+        }
+
+        /* ===== 手機豎屏：單欄佈局 ===== */
+        @media (max-width: 720px) {
+
+            /* 分類改為頂部橫向滑動 */
+            .main {
+                flex-direction: column;
+            }
+
+            .cats {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+                flex-shrink: 0;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .cats::-webkit-scrollbar {
+                display: none;
+            }
+
+            .cat {
+                width: auto;
+                flex-shrink: 0;
+                padding: 12px 16px;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                line-height: 1.2;
+            }
+
+            .cat br {
+                display: none;
+            }
+
+            .cat.active {
+                border-left: none;
+                border-bottom-color: var(--accent);
+            }
+
+            /* 商品區全寬，底部留空間給購物車 bar */
+            .menu {
+                padding: 12px 12px calc(80px + var(--safe-bottom));
+            }
+
+            /* 右側購物車：平時隱藏，變成可滑出的全螢幕面板 */
+            .cart {
+                position: fixed;
+                inset: 0;
+                top: auto;
+                width: 100%;
+                height: 82vh;
+                border-left: none;
+                border-top: 1px solid var(--line);
+                border-radius: 18px 18px 0 0;
+                z-index: 60;
+                transform: translateY(100%);
+                transition: transform .26s ease-out;
+                box-shadow: 0 -4px 24px rgba(0, 0, 0, .12);
+            }
+
+            .cart.open {
+                transform: translateY(0);
+            }
+
+            .cart-foot {
+                padding-bottom: calc(12px + var(--safe-bottom));
+            }
+
+            /* 底部固定 bar：顯示件數、金額、展開鍵 */
+            .cart-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 55;
+                background: var(--accent);
+                color: #fff;
+                padding: 12px 16px calc(12px + var(--safe-bottom));
+                box-shadow: 0 -2px 12px rgba(0, 0, 0, .15);
+            }
+
+            .cart-bar.empty {
+                background: var(--card);
+                color: var(--ink-faint);
+                box-shadow: 0 -1px 0 var(--line);
+            }
+
+            .cart-bar .cb-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 15px;
+            }
+
+            .cart-bar .cb-count {
+                background: rgba(255, 255, 255, .25);
+                border-radius: 14px;
+                min-width: 26px;
+                height: 26px;
+                padding: 0 8px;
+                display: grid;
+                place-items: center;
+                font-weight: 700;
+                font-size: 14px;
+            }
+
+            .cart-bar.empty .cb-count {
+                background: var(--line-soft);
+                color: var(--ink-soft);
+            }
+
+            .cart-bar .cb-total {
+                font-size: 19px;
+                font-weight: 800;
+            }
+
+            .cart-bar .cb-go {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-weight: 700;
+                font-size: 15px;
+            }
+
+            /* 購物車面板加一個收起把手 */
+            .cart-handle {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 721px) {
+            .cart-handle {
+                display: none;
+            }
+        }
+
+        .cart-handle {
+            justify-content: center;
+            padding: 8px 0 2px;
+        }
+
+        .cart-handle .bar {
+            width: 40px;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--line);
+        }
+
+        .scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(20, 20, 20, .4);
+            z-index: 58;
+            display: none;
+        }
+
+        .scrim.show {
+            display: block;
+        }
+
+        /* ===== 後台管理 ===== */
+        .form-in {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .form-in:focus {
+            outline: 2px solid var(--accent);
+            border-color: var(--accent);
+        }
+
+        .nav-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--card);
+        }
+
+        .nav-btn:active {
+            background: var(--line-soft);
+        }
+
+        .nav-btn.primary {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .admin {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--paper);
+        }
+
+        .admin.show {
+            display: flex;
+        }
+
+        .admin-tabs {
+            display: flex;
+            background: var(--card);
+            border-bottom: 1px solid var(--line);
+            flex-shrink: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .atab {
+            flex: 1 0 auto;
+            padding: 14px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+
+        .atab.active {
+            color: var(--accent-ink);
+            border-bottom-color: var(--accent);
+        }
+
+        .admin-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 庫存管理 */
+        .ing-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .ing-add {
+            flex: 1;
+            padding: 12px;
+            border: 1px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            background: var(--accent-soft);
+        }
+
+        .restock-banner {
+            background: var(--warn-soft);
+            color: var(--warn-ink);
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        /* 分類分組 */
+        .stock-cat {
+            margin-bottom: 14px;
+        }
+
+        .cat-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 4px;
+            border-bottom: 2px solid var(--line);
+            margin-bottom: 10px;
+            background: none;
+        }
+
+        .cat-arrow {
+            font-size: 13px;
+            color: var(--ink-soft);
+            transition: transform .15s;
+        }
+
+        .cat-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .cat-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .cat-count {
+            font-size: 13px;
+            color: var(--ink-soft);
+            background: var(--line-soft);
+            min-width: 22px;
+            height: 22px;
+            padding: 0 7px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            margin-left: auto;
+        }
+
+        .cat-items.hide {
+            display: none;
+        }
+
+        .cat-empty {
+            color: var(--ink-faint);
+            font-size: 13px;
+            padding: 8px 4px 14px;
+        }
+
+        .ing-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+        .ing-card.low {
+            border-color: var(--warn-ink);
+            background: var(--warn-soft);
+        }
+
+        .ing-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .ing-x {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            color: var(--ink-soft);
+            background: var(--card);
+        }
+
+        .ing-x:active {
+            background: var(--warn-soft);
+            color: var(--warn-ink);
+        }
+
+        .ing-headinfo {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ing-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .ing-vendor {
+            font-size: 13px;
+            color: var(--ink-soft);
+            font-weight: 400;
+        }
+
+        .ing-meta {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        .ing-updated {
+            font-size: 11px;
+            color: var(--ink-faint);
+            margin-top: 3px;
+        }
+
+        .ing-low-tag {
+            font-size: 12px;
+            color: var(--warn-ink);
+            font-weight: 700;
+        }
+
+        .ing-sort {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sortbtn {
+            width: 34px;
+            height: 22px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-size: 11px;
+            color: var(--ink-soft);
+            background: var(--paper);
+        }
+
+        .sortbtn:active:not(:disabled) {
+            background: var(--line-soft);
+        }
+
+        .sortbtn:disabled {
+            opacity: .25;
+        }
+
+        .ing-del {
+            color: var(--ink-faint);
+            font-size: 18px;
+            padding: 4px 8px;
+        }
+
+        .ing-qty-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ing-qty-row .qbtn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            background: var(--paper);
+        }
+
+        .ing-qval {
+            font-size: 20px;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .ing-unit {
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        /* 分類選擇 chip */
+        .catchips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .catchips .catchip {
+            flex: 1 1 calc(33% - 8px);
+            min-width: 72px;
+        }
+
+        .catchip {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            background: var(--card);
+            color: var(--ink);
+        }
+
+        .catchip.on {
+            border: 2px solid var(--accent);
+            background: var(--accent-soft);
+            color: var(--accent-ink);
+        }
+
+        /* 報表 */
+        .rpt-date {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .rpt-date input {
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: inherit;
+            background: var(--card);
+            color: var(--ink);
+        }
+
+        .rpt-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .rpt-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 14px;
+        }
+
+        .rpt-card .lbl {
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .rpt-card .val {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .rpt-sec {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 18px 0 10px;
+        }
+
+        .rpt-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .rpt-bar-row .nm {
+            width: 72px;
+            font-size: 14px;
+        }
+
+        .rpt-bar-row .nm.wide {
+            width: 110px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rpt-bar-track {
+            flex: 1;
+            background: var(--line-soft);
+            border-radius: 6px;
+            height: 24px;
+            overflow: hidden;
+        }
+
+        .rpt-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 6px;
+        }
+
+        .rpt-bar-fill.gold {
+            background: var(--gold);
+        }
+
+        .rpt-bar-row .amt {
+            width: 92px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .rpt-table {
+            width: 100%;
+            font-size: 14px;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .rpt-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .rpt-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rpt-empty {
+            text-align: center;
+            color: var(--ink-faint);
+            padding: 40px;
+            font-size: 14px;
+        }
+
+        /* 訂單管理 */
+        .ord-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .ord-selall {
+            padding: 8px 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--card);
+            color: var(--ink);
+        }
+
+        .ord-selinfo {
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .ord-delsel {
+            margin-left: auto;
+            padding: 8px 14px;
+            border: 1px solid #c0392b;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .ord-delsel.disabled {
+            border-color: var(--line);
+            background: var(--line-soft);
+            color: var(--ink-faint);
+        }
+
+        .ord-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+
+        .ord-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ord-card.sel {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .ord-caret {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--ink-faint);
+            margin-left: 6px;
+            transition: transform .15s;
+        }
+
+        .ord-caret.open {
+            transform: rotate(90deg);
+        }
+
+        .ord-detail {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--line);
+        }
+
+        .od-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 14px;
+            padding: 3px 0;
+        }
+
+        .od-sub {
+            color: var(--ink-soft);
+            font-size: 12px;
+        }
+
+        .od-q {
+            color: var(--ink-soft);
+        }
+
+        .od-amt {
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .od-tot {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--line-soft);
+        }
+
+        .od-totrow {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--ink-soft);
+            padding: 2px 0;
+        }
+
+        .od-totrow.strong {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-top: 2px;
+        }
+
+        .ord-check {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            border: 2px solid var(--line);
+            border-radius: 6px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            color: #fff;
+            background: var(--card);
+        }
+
+        .ord-check.on {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .ord-info {
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
+        }
+
+        .ord-line1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .ord-no {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .ord-total {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .ord-line2 {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        .ord-items {
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ord-x {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            color: var(--ink-soft);
+            background: var(--card);
+        }
+
+        .ord-x:active {
+            background: var(--warn-soft);
+            color: var(--warn-ink);
+        }
+
+        /* 備份分頁 */
+        .bk-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 8px;
+        }
+
+        .bk-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .bk-stat {
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        .bk-desc {
+            font-size: 13px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            margin: 0 0 12px;
+        }
+
+        .bk-desc strong {
+            color: var(--ink);
+        }
+
+        .bk-btn {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--card);
+        }
+
+        .bk-btn:active {
+            background: var(--line-soft);
+        }
+
+        .bk-btn.primary {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .bk-btn.primary:active {
+            background: var(--accent-ink);
+        }
+
+        .bk-btn.danger {
+            border-color: #c0392b;
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .bk-btn.danger:active {
+            background: #a02c20;
+        }
+
+        /* 未售出商品折疊 */
+        .rpt-fold {
+            margin: 4px 0 8px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            background: var(--card);
+            overflow: hidden;
+        }
+
+        .rpt-fold summary {
+            padding: 12px 14px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rpt-fold summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .rpt-fold summary::before {
+            content: '▸';
+            font-size: 12px;
+            transition: transform .15s;
+        }
+
+        .rpt-fold[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .rpt-fold-body {
+            padding: 0 14px 8px;
+        }
+
+        .rpt-zero-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-top: 1px solid var(--line-soft);
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        .rpt-zero-row .zero-amt {
+            color: var(--ink-faint);
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        /* ===== 後台菜單管理 ===== */
+        .msub-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+        .msub-tabs button { flex: 1; padding: 9px; border: 1px solid var(--line); background: #fff; border-radius: var(--radius-sm); font-weight: 700; color: var(--ink-soft); font-size: 15px; touch-action: manipulation; }
+        .msub-tabs button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .mcat-head { display: flex; align-items: center; gap: 8px; padding: 8px 4px; flex-wrap: wrap; }
+        .mcat-head .cat-arrow { background: none; border: none; font-size: 14px; transition: transform .15s; color: var(--ink-soft); }
+        .mcat-head .cat-arrow.open { transform: rotate(90deg); }
+        .mcat-head .cat-title { font-weight: 700; font-size: 16px; }
+        .mcat-head .cat-count { background: var(--line-soft); border-radius: 10px; padding: 1px 9px; font-size: 13px; color: var(--ink-soft); }
+        .mrow-btns { display: flex; gap: 5px; align-items: center; margin-left: auto; }
+        .off { opacity: .45; }
+        .off-tag { color: var(--ink-faint); font-weight: 400; font-size: 13px; }
+        .mini-btn { padding: 5px 10px; border: 1px solid var(--line); background: #fff; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--ink); touch-action: manipulation; }
+        .mitem { border: 1px solid var(--line-soft); border-radius: var(--radius-sm); padding: 10px 12px; margin: 8px 0; background: #fff; }
+        .mitem-main { display: flex; gap: 8px; align-items: flex-start; }
+        .mitem-info { flex: 1; min-width: 0; }
+        .mitem-nm { font-weight: 700; font-size: 15px; }
+        .mitem-meta { font-size: 13px; color: var(--ink-soft); margin-top: 3px; line-height: 1.5; }
+        .mitem-ctrl { display: flex; gap: 6px; margin-top: 8px; }
+        .ing-add.sm { font-size: 13px; padding: 6px 10px; margin: 6px 0; }
+        .form-toggle-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .form-toggle { padding: 8px 12px; border: 1px solid var(--line); background: #fff; border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; color: var(--ink-soft); touch-action: manipulation; }
+        .form-toggle.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+    </style>
+</head>
+
+<body>
+  <div id="root">
+    <div class="app" v-show="state.screen==='pos'">
+        <div class="topbar">
+            <div class="brand"><span class="mark">澤</span> 澤川屋 POS</div>
+            <button class="nav-btn" @click="promptAdminPassword()">後台</button>
+        </div>
+        <div class="main">
+            <div class="cats" id="cats"><button class="cat" v-for="c in cats" :key="c.id" :class="{active: c.id===state.activeCat}" @click="state.activeCat=c.id" v-html="c.name.replace(/(.{3})/,'$1<br>')"></button></div>
+            <div class="menu">
+                <p class="menu-hd" id="menuHd">{{ currentCat ? currentCat.name : '' }}</p>
+                <div class="grid" id="grid">
+                    <button class="rowtile" v-for="p in catItems" :key="p.id" :class="{'in-cart': cartQtyForProduct(p.id)}" @click="tapItem(p)">
+                        <span class="nm">{{ p.name }}<span class="rbadge" v-if="cartQtyForProduct(p.id)">×{{ cartQtyForProduct(p.id) }}</span></span>
+                        <span class="pr">{{ p.price }}<span class="chev" v-if="p.modifierIds && p.modifierIds.length"> ›</span></span>
+                    </button>
+                </div>
+            </div>
+            <div class="cart" id="cart">
+                <div class="cart-handle" id="cartHandle" @click="closeCartPanel()"><span class="bar"></span></div>
+                <div class="cart-hd">
+                    <span><span class="ttl">購物車</span> <span class="no" id="orderNo">{{ '#'+String(state.orderSeq).padStart(3,'0') }}</span></span>
+                    <button class="clear" id="clearBtn" @click="clearCart()">清空</button>
+                </div>
+                <div class="cart-body" id="cartBody">
+                    <div class="cart-empty" v-if="!state.cart.length">點選左側商品<br>開始點餐</div>
+                    <div class="credit-bar warn" v-if="state.cart.length && creditInfo.show && creditInfo.unused">⚠ 套餐附小菜折抵還沒用滿，可再點小菜（40元小菜1道、或溏心蛋2顆＝折40元）</div>
+                    <div class="credit-bar ok" v-if="state.cart.length && creditInfo.show && !creditInfo.unused">✓ 套餐附小菜已折抵（省 {{ money(totals.comboSideDiscount) }}）</div>
+                    <div class="line" v-for="l in state.cart">
+                        <div class="line-top">
+                            <div><div class="line-nm">{{ l.name }}</div><div class="line-sub" v-if="l.sub">+{{ l.sub }}</div></div>
+                            <div class="line-amt">{{ l.unitPrice===0 ? '免費' : money(l.unitPrice*l.qty) }}</div>
+                        </div>
+                        <div class="line-ctrl">
+                            <button class="qbtn" @click="changeQty(l.lineKey,-1)">−</button>
+                            <span class="qnum">{{ l.qty }}</span>
+                            <button class="qbtn" @click="changeQty(l.lineKey,1)">＋</button>
+                            <button class="line-del" @click="removeLine(l.lineKey)">🗑</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-foot">
+                    <div class="ft-row"><span>小計</span><span id="subtotal">{{ money(totals.subtotal) }}</span></div>
+                    <div class="ft-row disc" :class="{hide: !(totals.comboSideDiscount>0 || totals.orderDiscAmt>0)}" id="discRow"><span id="discLabel">{{ discountLabel }}</span><span id="discAmt">−{{ money(totals.comboSideDiscount+totals.orderDiscAmt) }}</span></div>
+                    <div class="ft-total"><span class="lbl">應收</span><span class="val" id="total">{{ money(totals.total) }}</span></div>
+                    <button class="btn-primary" id="checkoutBtn" :disabled="!state.cart.length" @click="openCheckout()">結帳</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 後台管理畫面（預設隱藏）===== -->
+    <div class="admin" id="admin" :class="{show: state.screen==='admin'}">
+        <div class="topbar">
+            <div class="brand"><span class="mark">澤</span> 後台管理</div>
+            <button class="nav-btn primary" @click="setScreen('pos')">← 回點餐</button>
+        </div>
+        <div class="admin-tabs">
+            <button class="atab" v-for="t in ADMIN_TABS" :class="{active: state.adminTab===t.id}" @click="setAdminTab(t.id)">{{ t.name }}</button>
+        </div>
+        <!-- petite-vue：訂單管理分頁 -->
+        <div class="admin-body" v-if="state.adminTab==='orders'">
+            <div class="rpt-empty" v-if="!ordersSorted.length">尚無訂單記錄</div>
+            <div v-if="ordersSorted.length">
+                <div class="ord-toolbar">
+                    <button class="ord-selall" @click="toggleSelAllOrders()">{{ orderSelCount===ordersSorted.length ? '取消全選' : '全選' }}</button>
+                    <span class="ord-selinfo">{{ orderSelCount>0 ? '已選 '+orderSelCount+' 筆' : '點左側方框可多選' }}</span>
+                    <button class="ord-delsel" :class="{disabled: !orderSelCount}" :disabled="!orderSelCount" @click="confirmDeleteOrders([...state.orderSel])">刪除所選</button>
+                </div>
+                <div class="ord-card" :class="{sel: state.orderSel.includes(o.id)}" v-for="o in ordersSorted" :key="o.id">
+                    <div class="ord-row">
+                        <button class="ord-check" :class="{on: state.orderSel.includes(o.id)}" @click="toggleOrderSel(o.id)">{{ state.orderSel.includes(o.id) ? '✓' : '' }}</button>
+                        <div class="ord-info" @click="toggleOrderDetail(o.id)">
+                            <div class="ord-line1"><span class="ord-no">{{ o.orderNo }}<span class="ord-caret" :class="{open: state.openOrders[o.id]}">▸</span></span><span class="ord-total">{{ money(o.total) }}</span></div>
+                            <div class="ord-line2">{{ orderTime(o) }} · {{ o.paymentLabel }}</div>
+                            <div class="ord-items" v-if="!state.openOrders[o.id]">{{ orderSummary(o) || '(無項目)' }}</div>
+                        </div>
+                        <button class="ord-x" @click="confirmDeleteOrders([o.id])" aria-label="刪除">✕</button>
+                    </div>
+                    <div class="ord-detail" v-if="state.openOrders[o.id]">
+                        <div class="od-line" v-for="(it,idx) in o.items" :key="idx">
+                            <div class="od-nm">{{ it.name }}<span class="od-sub" v-if="it.sub"> ＋{{ it.sub }}</span><span class="od-q" v-if="it.qty>1"> ×{{ it.qty }}</span></div>
+                            <div class="od-amt">{{ it.unitPrice===0 ? '免費' : money(it.lineTotal) }}</div>
+                        </div>
+                        <div class="od-tot">
+                            <div class="od-totrow"><span>小計</span><span>{{ money(o.subtotal) }}</span></div>
+                            <div class="od-totrow" v-if="o.comboSideDiscount>0"><span>套餐小菜折抵</span><span>−{{ money(o.comboSideDiscount) }}</span></div>
+                            <div class="od-totrow" v-if="o.orderDiscount>0"><span>折扣</span><span>−{{ money(o.orderDiscount) }}</span></div>
+                            <div class="od-totrow strong"><span>應收</span><span>{{ money(o.total) }}</span></div>
+                            <div class="od-totrow" v-if="o.paymentMethod==='cash' && o.cashReceived!=null"><span>收現</span><span>{{ money(o.cashReceived) }}</span></div>
+                            <div class="od-totrow" v-if="o.paymentMethod==='cash' && o.change!=null"><span>找零</span><span>{{ money(o.change) }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- petite-vue：日報分頁 -->
+        <div class="admin-body" v-if="state.adminTab==='daily'">
+            <div class="rpt-date"><input type="date" v-model="state.dailyDate"></div>
+            <div class="rpt-empty" v-if="!dailyVM.hasOrders">這天還沒有訂單記錄</div>
+            <div v-if="dailyVM.hasOrders">
+                <div class="rpt-cards">
+                    <div class="rpt-card"><div class="lbl">總營收</div><div class="val">{{ money(dailyVM.total) }}</div></div>
+                    <div class="rpt-card"><div class="lbl">訂單數</div><div class="val">{{ dailyVM.count }}</div></div>
+                    <div class="rpt-card"><div class="lbl">客單價</div><div class="val">{{ money(dailyVM.avg) }}</div></div>
+                    <div class="rpt-card"><div class="lbl">日期</div><div class="val" style="font-size:18px">{{ state.dailyDate }}</div></div>
+                </div>
+                <div class="rpt-sec">付款方式分布</div>
+                <div class="rpt-bar-row" v-for="r in dailyVM.payRows" :key="r.label">
+                    <span class="nm">{{ r.label }}</span>
+                    <div class="rpt-bar-track"><div class="rpt-bar-fill" :style="'width:'+r.w+'%'"></div></div>
+                    <span class="amt">{{ money(r.amt) }}</span>
+                </div>
+                <div class="rpt-sec">產品銷售量</div>
+                <div class="rpt-empty" v-if="!dailyVM.soldRows.length" style="padding:16px">此期間無銷售</div>
+                <div class="rpt-bar-row" v-for="r in dailyVM.soldRows" :key="r.name">
+                    <span class="nm wide">{{ r.name }}</span>
+                    <div class="rpt-bar-track"><div class="rpt-bar-fill" :style="'width:'+r.w+'%'"></div></div>
+                    <span class="amt">{{ r.qty }} 份</span>
+                </div>
+                <details class="rpt-fold" v-if="dailyVM.zeroRows.length">
+                    <summary>未售出商品（{{ dailyVM.zeroRows.length }} 項）</summary>
+                    <div class="rpt-fold-body">
+                        <div class="rpt-zero-row" v-for="name in dailyVM.zeroRows" :key="name"><span>{{ name }}</span><span class="zero-amt">0 份</span></div>
+                    </div>
+                </details>
+                <div class="rpt-sec">加購統計{{ dailyVM.hasMods ? '（共 '+dailyVM.modTotal+' 份）' : '' }}</div>
+                <div class="rpt-bar-row" v-for="r in dailyVM.modRows" :key="r.name">
+                    <span class="nm wide">{{ r.name }}</span>
+                    <div class="rpt-bar-track"><div class="rpt-bar-fill gold" :style="'width:'+r.w+'%'"></div></div>
+                    <span class="amt">{{ r.qty }} 份 · {{ r.pct }}%</span>
+                </div>
+                <div class="rpt-empty" v-if="!dailyVM.hasMods" style="padding:20px">此期間無加購記錄<br><span style="font-size:12px">（僅統計本版更新後的新訂單）</span></div>
+            </div>
+        </div>
+        <!-- petite-vue：月報分頁 -->
+        <div class="admin-body" v-if="state.adminTab==='monthly'">
+            <div class="rpt-date"><input type="month" v-model="state.monthlyMonth"></div>
+            <div class="rpt-empty" v-if="!monthlyVM.hasOrders">這個月還沒有訂單記錄</div>
+            <div v-if="monthlyVM.hasOrders">
+                <div class="rpt-cards">
+                    <div class="rpt-card"><div class="lbl">總營收</div><div class="val">{{ money(monthlyVM.total) }}</div></div>
+                    <div class="rpt-card"><div class="lbl">訂單數</div><div class="val">{{ monthlyVM.count }}</div></div>
+                    <div class="rpt-card"><div class="lbl">客單價</div><div class="val">{{ money(monthlyVM.avg) }}</div></div>
+                    <div class="rpt-card"><div class="lbl">月份</div><div class="val" style="font-size:18px">{{ state.monthlyMonth }}</div></div>
+                </div>
+                <div class="rpt-sec">付款方式分布</div>
+                <div class="rpt-bar-row" v-for="r in monthlyVM.payRows" :key="r.label">
+                    <span class="nm">{{ r.label }}</span>
+                    <div class="rpt-bar-track"><div class="rpt-bar-fill" :style="'width:'+r.w+'%'"></div></div>
+                    <span class="amt">{{ money(r.amt) }}</span>
+                </div>
+                <div class="rpt-sec">產品銷售量</div>
+                <div class="rpt-empty" v-if="!monthlyVM.soldRows.length" style="padding:16px">此期間無銷售</div>
+                <div class="rpt-bar-row" v-for="r in monthlyVM.soldRows" :key="r.name">
+                    <span class="nm wide">{{ r.name }}</span>
+                    <div class="rpt-bar-track"><div class="rpt-bar-fill" :style="'width:'+r.w+'%'"></div></div>
+                    <span class="amt">{{ r.qty }} 份</span>
+                </div>
+                <details class="rpt-fold" v-if="monthlyVM.zeroRows.length">
+                    <summary>未售出商品（{{ monthlyVM.zeroRows.length }} 項）</summary>
+                    <div class="rpt-fold-body">
+                        <div class="rpt-zero-row" v-for="name in monthlyVM.zeroRows" :key="name"><span>{{ name }}</span><span class="zero-amt">0 份</span></div>
+                    </div>
+                </details>
+                <div class="rpt-sec">加購統計{{ monthlyVM.hasMods ? '（共 '+monthlyVM.modTotal+' 份）' : '' }}</div>
+                <div class="rpt-bar-row" v-for="r in monthlyVM.modRows" :key="r.name">
+                    <span class="nm wide">{{ r.name }}</span>
+                    <div class="rpt-bar-track"><div class="rpt-bar-fill gold" :style="'width:'+r.w+'%'"></div></div>
+                    <span class="amt">{{ r.qty }} 份 · {{ r.pct }}%</span>
+                </div>
+                <div class="rpt-empty" v-if="!monthlyVM.hasMods" style="padding:20px">此期間無加購記錄<br><span style="font-size:12px">（僅統計本版更新後的新訂單）</span></div>
+            </div>
+        </div>
+        <!-- petite-vue：備份分頁 -->
+        <div class="admin-body" v-if="state.adminTab==='backup'">
+            <div class="bk-card">
+                <div class="bk-title">目前資料</div>
+                <div class="bk-stat">訂單 {{ state.orders.length }} 筆 · 食材 {{ state.ingredients.length }} 項 · 菜單 {{ menuCatsAll.reduce((s,c)=>s+(c.items?c.items.length:0),0) }} 品項</div>
+                <div class="bk-stat" style="margin-top:4px">上次備份：{{ lastBackupText }}</div>
+                <div class="bk-stat" style="margin-top:4px">目前版本：{{ appVersion }}</div>
+            </div>
+            <div class="rpt-sec">匯出備份</div>
+            <p class="bk-desc">把目前所有訂單、食材與<strong>菜單</strong>存成一個檔案。可上傳到雲端硬碟保險，或傳到另一支手機匯入。</p>
+            <button class="bk-btn primary" @click="exportBackup()">⬇ 匯出備份檔</button>
+            <div class="rpt-sec" style="margin-top:24px">匯入備份</div>
+            <p class="bk-desc">從備份檔還原：<strong>清空現有訂單、食材、菜單，換成檔案內容</strong>（用於還原或轉移到另一支手機）。若檔案沒帶菜單，會自動套用出廠預設菜單。</p>
+            <button class="bk-btn" @click="triggerImport()">📥 匯入備份（覆蓋）</button>
+            <input type="file" id="bkFile" accept="application/json,.json" style="display:none">
+        </div>
+        <!-- petite-vue：庫存管理分頁 -->
+        <div class="admin-body" v-if="state.adminTab==='ingredients'">
+            <div class="restock-banner" v-if="lowStock.length">⚠ 需補貨（{{ lowStock.length }} 項）<br>{{ lowStockText }}</div>
+            <div class="ing-toolbar"><button class="ing-add" @click="editIngredient(null)">＋ 新增品項</button></div>
+            <div class="stock-cat" v-for="cat in ingGroups" :key="cat.id">
+                <button class="cat-head" @click="toggleCat(cat.id)">
+                    <span class="cat-arrow" :class="{open: !state.collapsedCats[cat.id]}">▸</span>
+                    <span class="cat-title">{{ cat.name }}</span>
+                    <span class="cat-count">{{ cat.items.length }}</span>
+                </button>
+                <div class="cat-items" :class="{hide: state.collapsedCats[cat.id]}">
+                    <div class="cat-empty" v-if="!cat.items.length">此分類尚無品項</div>
+                    <div class="ing-card" :class="{low: i.qty<=i.safeQty}" v-for="(i, idx) in cat.items" :key="i.id">
+                        <div class="ing-top">
+                            <button class="ing-x" @click="confirmDeleteIng(i)" aria-label="刪除">✕</button>
+                            <div class="ing-headinfo">
+                                <div class="ing-name">{{ i.name }}<span class="ing-vendor" v-if="i.vendor"> · {{ i.vendor }}</span></div>
+                                <div class="ing-meta">安全存量 {{ i.safeQty }} {{ i.unit }}<span v-if="i.qty<=i.safeQty"> · <span class="ing-low-tag">需補貨</span></span></div>
+                                <div class="ing-updated">{{ i.updatedAt ? '更動 ' + fmtShort(i.updatedAt) : '尚未更動' }}</div>
+                            </div>
+                            <div class="ing-sort">
+                                <button class="sortbtn" :disabled="idx===0" @click="moveIng(i.id,-1)">▲</button>
+                                <button class="sortbtn" :disabled="idx===cat.items.length-1" @click="moveIng(i.id,1)">▼</button>
+                            </div>
+                        </div>
+                        <div class="ing-qty-row">
+                            <button class="qbtn" @click="adjustIng(i.id,-1)">−</button>
+                            <span class="ing-qval">{{ i.qty }}</span>
+                            <span class="ing-unit">{{ i.unit }}</span>
+                            <button class="qbtn" @click="adjustIng(i.id,1)">＋</button>
+                            <button class="nav-btn" @click="editIngredient(i)" style="margin-left:auto">編輯</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- petite-vue：菜單管理分頁 -->
+        <div class="admin-body" v-if="state.adminTab==='menu'">
+            <div class="msub-tabs">
+                <button v-for="t in MENU_TABS" :key="t.id" :class="{on: state.menuTab===t.id}" @click="state.menuTab=t.id">{{ t.name }}</button>
+            </div>
+
+            <!-- 商品（分類 → 品項）-->
+            <div v-if="state.menuTab==='products'">
+                <div class="ing-toolbar"><button class="ing-add" @click="addCategory()">＋ 新增分類</button></div>
+                <div class="stock-cat" v-for="(cat,ci) in menuCatsAll" :key="cat.id">
+                    <div class="mcat-head">
+                        <button class="cat-arrow" :class="{open:!state.collapsedCats['m_'+cat.id]}" @click="toggleCat('m_'+cat.id)">▸</button>
+                        <span class="cat-title" :class="{off:cat.hidden}">{{ cat.name }}<span v-if="cat.hidden" class="off-tag"> · 停售</span></span>
+                        <span class="cat-count">{{ (cat.items||[]).length }}</span>
+                        <span class="mrow-btns">
+                            <button class="sortbtn" :disabled="ci===0" @click="moveCategory(cat.id,-1)">▲</button>
+                            <button class="sortbtn" :disabled="ci===menuCatsAll.length-1" @click="moveCategory(cat.id,1)">▼</button>
+                            <button class="mini-btn" @click="editCategory(cat)">編輯</button>
+                            <button class="mini-btn" @click="toggleHidden('category',cat.id)">{{ cat.hidden?'復售':'停售' }}</button>
+                        </span>
+                    </div>
+                    <div class="cat-items" :class="{hide: state.collapsedCats['m_'+cat.id]}">
+                        <button class="ing-add sm" @click="addItem(cat)">＋ 新增品項</button>
+                        <div class="cat-empty" v-if="!(cat.items||[]).length">此分類尚無品項</div>
+                        <div class="mitem" :class="{off:i.hidden}" v-for="(i,ii) in (cat.items||[])" :key="i.id">
+                            <div class="mitem-main">
+                                <div class="mitem-info">
+                                    <div class="mitem-nm">{{ i.name }}<span v-if="i.hidden" class="off-tag"> · 停售</span></div>
+                                    <div class="mitem-meta">${{ i.price }}<span v-if="i.modifierIds && i.modifierIds.length"> · 加購：{{ modNames(i.modifierIds) }}</span><span v-if="i.sideCredit"> · 含{{i.sideCredit}}份小菜額度</span><span v-if="i.creditEligible"> · 可折抵</span><span v-if="i.isMiso"> · 套餐附湯</span></div>
+                                </div>
+                                <div class="ing-sort">
+                                    <button class="sortbtn" :disabled="ii===0" @click="moveItem(cat.id,i.id,-1)">▲</button>
+                                    <button class="sortbtn" :disabled="ii===(cat.items||[]).length-1" @click="moveItem(cat.id,i.id,1)">▼</button>
+                                </div>
+                            </div>
+                            <div class="mitem-ctrl">
+                                <button class="mini-btn" @click="editItem(cat,i)">編輯</button>
+                                <button class="mini-btn" @click="toggleHidden('item',i.id,cat.id)">{{ i.hidden?'復售':'停售' }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="bk-btn danger" style="margin-top:22px" @click="confirmRestoreMenu()">↺ 還原原廠菜單</button>
+            </div>
+
+            <!-- 加購 -->
+            <div v-if="state.menuTab==='modifiers'">
+                <div class="ing-toolbar"><button class="ing-add" @click="addModifier()">＋ 新增加購</button></div>
+                <div class="mitem" :class="{off:m.hidden}" v-for="(m,mi) in menuModsAll" :key="m.id">
+                    <div class="mitem-main">
+                        <div class="mitem-info">
+                            <div class="mitem-nm">{{ m.name }}<span v-if="m.hidden" class="off-tag"> · 停售</span></div>
+                            <div class="mitem-meta">+${{ m.price }}<span v-if="m.sideCredit"> · 給{{m.sideCredit}}份小菜額度</span><span v-if="m.withMiso"> · 自動帶味噌湯</span></div>
+                        </div>
+                        <div class="ing-sort">
+                            <button class="sortbtn" :disabled="mi===0" @click="moveModifier(m.id,-1)">▲</button>
+                            <button class="sortbtn" :disabled="mi===menuModsAll.length-1" @click="moveModifier(m.id,1)">▼</button>
+                        </div>
+                    </div>
+                    <div class="mitem-ctrl">
+                        <button class="mini-btn" @click="editModifier(m)">編輯</button>
+                        <button class="mini-btn" @click="toggleHidden('modifier',m.id)">{{ m.hidden?'復售':'停售' }}</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 折扣 -->
+            <div v-if="state.menuTab==='discounts'">
+                <div class="ing-toolbar"><button class="ing-add" @click="addDiscount()">＋ 新增折扣</button></div>
+                <div class="mitem" :class="{off:d.hidden}" v-for="(d,di) in menuDiscsAll" :key="d.id">
+                    <div class="mitem-main">
+                        <div class="mitem-info">
+                            <div class="mitem-nm">{{ d.label }}<span v-if="d.hidden" class="off-tag"> · 停售</span></div>
+                            <div class="mitem-meta">{{ discText(d) }}</div>
+                        </div>
+                        <div class="ing-sort">
+                            <button class="sortbtn" :disabled="di===0" @click="moveDiscount(d.id,-1)">▲</button>
+                            <button class="sortbtn" :disabled="di===menuDiscsAll.length-1" @click="moveDiscount(d.id,1)">▼</button>
+                        </div>
+                    </div>
+                    <div class="mitem-ctrl">
+                        <button class="mini-btn" @click="editDiscount(d)">編輯</button>
+                        <button class="mini-btn" @click="toggleHidden('discount',d.id)">{{ d.hidden?'復售':'停售' }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 手機：購物車面板遮罩 -->
+    <div class="scrim" id="scrim"></div>
+
+    <!-- 手機：底部購物車 bar（僅點餐畫面顯示，後台不出現）-->
+    <div class="cart-bar" id="cartBar" v-show="state.screen==='pos'" :class="{empty: cartCount===0}" @click="openCartPanel()">
+        <div class="cb-info">
+            <span class="cb-count" id="cbCount">{{ cartCount }}</span>
+            <span class="cb-total" id="cbTotal">{{ money(totals.total) }}</span>
+        </div>
+        <span class="cb-go" id="cbGo">{{ cartCount===0 ? '尚未點餐' : '查看購物車' }}</span>
+    </div>
+    <div class="overlay" id="overlay">
+        <!-- 所有彈窗皆由 petite-vue 管理，state.sheet 決定顯示哪一個 -->
+
+        <!-- petite-vue：商品彈窗（丼飯 / 有加購的主食）-->
+        <div class="sheet" v-if="state.sheet==='item'">
+            <div class="sheet-hd">
+                <div><div class="nm">{{ state.item.displayName }}</div>
+                    <div class="pr">單價 ${{ state.item.basePrice }}</div></div>
+                <button class="sheet-x" @click="hideOverlay()">✕</button>
+            </div>
+            <div class="sheet-body">
+                <p class="sec-lbl">數量</p>
+                <div class="qty-row">
+                    <button class="qty-big" @click="itemQty(-1)">−</button>
+                    <span class="qty-val" :class="{editable: state.item.editing}" @click="itemQtap()">{{ state.item.qty }}</span>
+                    <button class="qty-big plus" @click="itemQty(1)">＋</button>
+                </div>
+                <div class="pad" v-if="state.item.editing">
+                    <button class="key" v-for="k in PAD_KEYS" :class="{fn: k==='清除'||k==='確定'}" @click="itemKey(k)">{{ k }}</button>
+                </div>
+                <div v-if="state.item.mods.length">
+                    <p class="sec-lbl" style="margin-top:18px">加購（份數不可超過數量）</p>
+                    <div class="mods">
+                        <div class="mod-row" :class="{on: state.item.modQty[m.id]>0}" v-for="m in state.item.mods">
+                            <div class="mod-info"><span class="mod-nm">{{ m.name }}</span><span class="mod-pr">+{{ m.price }}</span></div>
+                            <div class="mod-stepper">
+                                <button class="mstep" :disabled="state.item.modQty[m.id]<=0" @click="itemModDec(m.id)">−</button>
+                                <span class="mod-q">{{ state.item.modQty[m.id] }}</span>
+                                <button class="mstep" :disabled="state.item.modQty[m.id]>=state.item.qty" @click="itemModInc(m.id)">＋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sheet-foot">
+                <button class="add-btn" @click="itemAdd()">
+                    <span>＋ 加入購物車</span><span>{{ money(itemTotal) }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- petite-vue：結帳彈窗 -->
+        <div class="sheet" v-if="state.sheet==='checkout'">
+            <div class="sheet-hd">
+                <div class="nm">結帳 · <span style="color:var(--ink-faint);font-weight:400">{{ orderNoText }}</span></div>
+                <button class="sheet-x" @click="hideOverlay()">✕</button>
+            </div>
+            <div class="sheet-body">
+                <div v-if="totals.creditsUnused>0" style="background:var(--warn-soft);color:var(--warn-ink);padding:10px 12px;border-radius:var(--radius-sm);margin-bottom:12px;font-size:13px;font-weight:600;line-height:1.4">
+                    ⚠ 還有 {{ totals.creditsUnused }} 份套餐小菜未點（可再選 {{ totals.creditsUnused }} 道 40 元小菜免費）
+                </div>
+                <!-- 應收 + 付款方式並排 -->
+                <div class="due-pay-row">
+                    <div class="due-block">
+                        <span class="due-lbl">應收</span>
+                        <span class="due-amt">{{ money(totals.total) }}</span>
+                        <span class="due-sub" v-if="totals.comboSideDiscount>0 || totals.orderDiscAmt>0">小計 {{ money(totals.subtotal) }}<span v-if="totals.comboSideDiscount>0"> · 套餐折 {{ money(totals.comboSideDiscount) }}</span><span v-if="totals.orderDiscAmt>0 && state.discount"> · {{ state.discount.label }}</span></span>
+                    </div>
+                    <div class="pay-mini-col">
+                        <button class="pay-mini" :class="{on: state.payMethod===p.id}" v-for="p in PAYS" @click="setPay(p.id)"><span class="ic">{{ p.ic }}</span>{{ p.nm }}</button>
+                    </div>
+                </div>
+                <!-- 現金：大字收現找零 + 快速金額 + 數字鍵盤 -->
+                <div class="cash-big" v-if="state.payMethod==='cash'">
+                    <div class="cash-big-row"><span class="cash-big-lbl">收現</span><span class="cash-big-val">{{ money(state.cashReceived) }}</span></div>
+                    <div class="cash-big-row change"><span class="cash-big-lbl">找零</span><span class="cash-big-val">{{ cashChange>=0 && state.cashReceived>0 ? money(cashChange) : '—' }}</span></div>
+                </div>
+                <div class="quick-cash" v-if="state.payMethod==='cash'">
+                    <button class="qc" @click="setCash(totals.total)">剛好 {{ money(totals.total) }}</button>
+                    <button class="qc" @click="setCash(500)">$500</button>
+                    <button class="qc" @click="setCash(1000)">$1000</button>
+                </div>
+                <div class="cashpad" v-if="state.payMethod==='cash'">
+                    <button class="ckey" :class="{fn: k==='倒退'}" v-for="k in CASHPAD_KEYS" @click="cashKey(k)">{{ k }}</button>
+                </div>
+                <!-- 折扣（收在下方）-->
+                <p class="sec-lbl" style="margin-top:16px">折扣活動</p>
+                <div class="disc-chips">
+                    <button class="chip" :class="{on: state.discount && state.discount.id===d.id}" v-for="d in discountChips" :key="d.id" @click="setDisc(d.id)"><span v-if="state.discount && state.discount.id===d.id">✓ </span>{{ d.label }}</button>
+                    <button class="chip" @click="setDisc('none')">無折扣</button>
+                </div>
+            </div>
+            <div class="sheet-foot">
+                <button class="add-btn" :disabled="!canConfirm" :style="canConfirm ? '' : 'opacity:.5'" @click="completeOrder()">
+                    <span>✓ 確認收款</span><span>{{ money(totals.total) }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- petite-vue：新增/編輯食材 -->
+        <div class="sheet" v-if="state.sheet==='editIng'">
+            <div class="sheet-hd">
+                <div class="nm">{{ state.editIng.isNew ? '新增品項' : '編輯品項' }}</div>
+                <button class="sheet-x" @click="hideOverlay()">✕</button>
+            </div>
+            <div class="sheet-body">
+                <p class="sec-lbl">分類</p>
+                <div class="catchips">
+                    <button class="catchip" :class="{on: state.editIng.category===c.id}" v-for="c in STOCK_CATEGORIES" @click="state.editIng.category=c.id">{{ c.name }}</button>
+                </div>
+                <p class="sec-lbl" style="margin-top:14px">名稱</p>
+                <input class="form-in" v-model="state.editIng.name" placeholder="例：豬肉、紙碗、橡皮筋">
+                <p class="sec-lbl" style="margin-top:14px">廠商</p>
+                <div class="catchips">
+                    <button class="catchip" :class="{on: state.editIng.vendor===v}" v-for="v in VENDORS" @click="state.editIng.vendor=v">{{ v }}</button>
+                </div>
+                <p class="sec-lbl" style="margin-top:14px">目前數量</p>
+                <input class="form-in" type="number" inputmode="decimal" v-model="state.editIng.qty">
+                <p class="sec-lbl" style="margin-top:14px">單位</p>
+                <input class="form-in" v-model="state.editIng.unit" placeholder="例：kg、份、顆、包">
+                <p class="sec-lbl" style="margin-top:14px">安全存量（低於此值提醒補貨）</p>
+                <input class="form-in" type="number" inputmode="decimal" v-model="state.editIng.safeQty">
+            </div>
+            <div class="sheet-foot">
+                <button class="add-btn" @click="saveIngredient()"><span>{{ state.editIng.isNew ? '新增' : '儲存' }}</span><span></span></button>
+            </div>
+        </div>
+
+        <!-- petite-vue：刪除食材確認 -->
+        <div class="sheet" v-if="state.sheet==='delIng'">
+            <div class="sheet-hd"><div class="nm">確認刪除？</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body"><p style="font-size:15px;line-height:1.6;margin:8px 0 0">確定要刪除「<strong>{{ state.delIng.name }}</strong>」嗎？<br><span style="color:var(--ink-soft);font-size:14px">此動作無法復原。</span></p></div>
+            <div class="sheet-foot" style="display:flex;gap:10px">
+                <button class="bk-btn" style="flex:1" @click="hideOverlay()">取消</button>
+                <button class="bk-btn danger" style="flex:1" @click="deleteIngredient()">刪除</button>
+            </div>
+        </div>
+
+        <!-- petite-vue：刪除訂單確認 -->
+        <div class="sheet" v-if="state.sheet==='delOrders'">
+            <div class="sheet-hd"><div class="nm">確認刪除？</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body"><p style="font-size:15px;line-height:1.6;margin:8px 0 0">確定要刪除 <strong>{{ state.delOrderIds.length }}</strong> 筆訂單嗎？<br><span style="color:var(--ink-soft);font-size:14px">刪除後這些訂單不再計入報表，無法復原。</span></p></div>
+            <div class="sheet-foot" style="display:flex;gap:10px">
+                <button class="bk-btn" style="flex:1" @click="hideOverlay()">取消</button>
+                <button class="bk-btn danger" style="flex:1" @click="deleteOrders()">刪除 {{ state.delOrderIds.length }} 筆</button>
+            </div>
+        </div>
+
+        <!-- petite-vue：匯入確認 -->
+        <div class="sheet" v-if="state.sheet==='import'">
+            <div class="sheet-hd"><div class="nm">確認匯入？</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body">
+                <p style="font-size:15px;line-height:1.6;margin:8px 0 0">
+                    即將<strong>覆蓋匯入</strong>（清空現有資料換成檔案內容）：<br>
+                    訂單 <strong>{{ state.importInfo.oCount }}</strong> 筆、食材 <strong>{{ state.importInfo.iCount }}</strong> 項、菜單 <strong>{{ state.importInfo.mCount }}</strong> 品項。<br>
+                    <span style="color:var(--warn-ink);font-size:14px">⚠ 會先清空現有訂單、食材與菜單，無法復原。</span>
+                    <span v-if="!state.importInfo.mCount" style="color:var(--ink-soft);font-size:14px"><br>此檔案沒帶菜單，匯入後將套用出廠預設菜單。</span>
+                </p>
+            </div>
+            <div class="sheet-foot" style="display:flex;gap:10px">
+                <button class="bk-btn" style="flex:1" @click="hideOverlay()">取消</button>
+                <button class="bk-btn danger" style="flex:1" @click="doImport()">確定匯入</button>
+            </div>
+        </div>
+
+        <!-- petite-vue：分類 新增/編輯 -->
+        <div class="sheet" v-if="state.sheet==='editCat'">
+            <div class="sheet-hd"><div class="nm">{{ state.editCat.isNew?'新增分類':'編輯分類' }}</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body">
+                <p class="sec-lbl">分類名稱</p>
+                <input class="form-in" v-model="state.editCat.name" placeholder="例：招牌豬肉丼、加點小菜" @vue:mounted="$el.focus()" @keydown.enter="saveCategory()">
+                <p style="font-size:12px;color:var(--ink-faint);margin:10px 2px 0;line-height:1.5">分類只是上方的分頁標籤；底下每個品項各自取完整品名（例：原味豬肉丼、起司豬肉丼）。</p>
+            </div>
+            <div class="sheet-foot"><button class="add-btn" @click="saveCategory()"><span>{{ state.editCat.isNew?'新增':'儲存' }}</span><span></span></button></div>
+        </div>
+
+        <!-- petite-vue：品項 新增/編輯 -->
+        <div class="sheet" v-if="state.sheet==='editMenuItem'">
+            <div class="sheet-hd"><div class="nm">{{ state.editMenuItem.isNew?'新增品項':'編輯品項' }}</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body">
+                <p class="sec-lbl">品項名稱</p>
+                <input class="form-in" v-model="state.editMenuItem.name" placeholder="例：原味、韓式泡菜" @vue:mounted="$el.focus()">
+                <p class="sec-lbl" style="margin-top:14px">價格</p>
+                <input class="form-in" type="number" inputmode="numeric" v-model="state.editMenuItem.price">
+                <p class="sec-lbl" style="margin-top:14px">可加購（點選切換）</p>
+                <div class="form-toggle-row" v-if="menuModsAll.filter(x=>!x.hidden).length">
+                    <button class="form-toggle" :class="{on: state.editMenuItem.modifierIds.includes(m.id)}" v-for="m in menuModsAll.filter(x=>!x.hidden)" :key="m.id" @click="toggleItemModifier(m.id)">{{ m.name }}</button>
+                </div>
+                <p v-else style="font-size:13px;color:var(--ink-faint);margin:4px 2px">尚無可用加購（可到「加購」頁新增）</p>
+                <p class="sec-lbl" style="margin-top:16px">進階設定（一般品項不用動）</p>
+                <div class="form-toggle-row">
+                    <button class="form-toggle" :class="{on:state.editMenuItem.creditEligible}" @click="state.editMenuItem.creditEligible=!state.editMenuItem.creditEligible">可被套餐折抵</button>
+                    <button class="form-toggle" :class="{on:state.editMenuItem.isMiso}" @click="state.editMenuItem.isMiso=!state.editMenuItem.isMiso">設為套餐附湯</button>
+                </div>
+                <p class="sec-lbl" style="margin-top:14px">本品項給幾份小菜折抵額度（優惠餐用，一般填 0）</p>
+                <input class="form-in" type="number" inputmode="numeric" v-model="state.editMenuItem.sideCredit">
+            </div>
+            <div class="sheet-foot"><button class="add-btn" @click="saveMenuItem()"><span>{{ state.editMenuItem.isNew?'新增':'儲存' }}</span><span></span></button></div>
+        </div>
+
+        <!-- petite-vue：加購 新增/編輯 -->
+        <div class="sheet" v-if="state.sheet==='editMod'">
+            <div class="sheet-hd"><div class="nm">{{ state.editMod.isNew?'新增加購':'編輯加購' }}</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body">
+                <p class="sec-lbl">加購名稱</p>
+                <input class="form-in" v-model="state.editMod.name" placeholder="例：套餐、肉加量、加飯" @vue:mounted="$el.focus()">
+                <p class="sec-lbl" style="margin-top:14px">加價</p>
+                <input class="form-in" type="number" inputmode="numeric" v-model="state.editMod.price">
+                <p class="sec-lbl" style="margin-top:14px">套餐相關</p>
+                <div class="form-toggle-row">
+                    <button class="form-toggle" :class="{on:state.editMod.sideCredit>0}" @click="state.editMod.sideCredit = state.editMod.sideCredit>0?0:1">給1份小菜折抵額度</button>
+                    <button class="form-toggle" :class="{on:state.editMod.withMiso}" @click="state.editMod.withMiso=!state.editMod.withMiso">自動帶味噌湯</button>
+                </div>
+            </div>
+            <div class="sheet-foot"><button class="add-btn" @click="saveModifier()"><span>{{ state.editMod.isNew?'新增':'儲存' }}</span><span></span></button></div>
+        </div>
+
+        <!-- petite-vue：折扣 新增/編輯 -->
+        <div class="sheet" v-if="state.sheet==='editDisc'">
+            <div class="sheet-hd"><div class="nm">{{ state.editDisc.isNew?'新增折扣':'編輯折扣' }}</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body">
+                <p class="sec-lbl">折扣名稱</p>
+                <input class="form-in" v-model="state.editDisc.label" placeholder="例：全單9折、折$20" @vue:mounted="$el.focus()" @keydown.enter="saveDiscount()">
+                <p class="sec-lbl" style="margin-top:14px">折扣方式</p>
+                <div class="form-toggle-row">
+                    <button class="form-toggle" :class="{on:state.editDisc.type==='percent'}" @click="state.editDisc.type='percent'">打折 %</button>
+                    <button class="form-toggle" :class="{on:state.editDisc.type==='amount'}" @click="state.editDisc.type='amount'">定額折抵 $</button>
+                </div>
+                <p class="sec-lbl" style="margin-top:14px">{{ state.editDisc.type==='percent' ? '折幾 %（例：打9折填 10）' : '折抵金額 $' }}</p>
+                <input class="form-in" type="number" inputmode="numeric" v-model="state.editDisc.value">
+            </div>
+            <div class="sheet-foot"><button class="add-btn" @click="saveDiscount()"><span>{{ state.editDisc.isNew?'新增':'儲存' }}</span><span></span></button></div>
+        </div>
+
+        <!-- petite-vue：還原原廠菜單確認 -->
+        <div class="sheet" v-if="state.sheet==='restoreMenu'">
+            <div class="sheet-hd"><div class="nm">還原原廠菜單？</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body"><p style="font-size:15px;line-height:1.6;margin:8px 0 0">確定要把菜單<strong>還原成出廠預設</strong>嗎？<br><span style="color:var(--warn-ink);font-size:14px">⚠ 目前所有菜單修改（價格、品項、加購、折扣）都會被覆蓋，無法復原。訂單與庫存不受影響。</span></p></div>
+            <div class="sheet-foot" style="display:flex;gap:10px">
+                <button class="bk-btn" style="flex:1" @click="hideOverlay()">取消</button>
+                <button class="bk-btn danger" style="flex:1" @click="restoreMenu()">還原</button>
+            </div>
+        </div>
+
+        <!-- petite-vue：進後台前購物車警告 -->
+        <div class="sheet" v-if="state.sheet==='enterAdminWarn'">
+            <div class="sheet-hd"><div class="nm">購物車尚有未完成的項目</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body"><p style="font-size:15px;line-height:1.6;margin:8px 0 0">進入後台會<strong>清空目前的購物車</strong>（{{ cartCount }} 項）。<br><span style="color:var(--warn-ink);font-size:14px">⚠ 尚未結帳的內容會被清掉，無法復原。</span><br>確定要清空並進入後台嗎？</p></div>
+            <div class="sheet-foot" style="display:flex;gap:10px">
+                <button class="bk-btn" style="flex:1" @click="hideOverlay()">取消</button>
+                <button class="bk-btn danger" style="flex:1" @click="enterAdminAfterClear()">是，清空並進入</button>
+            </div>
+        </div>
+
+        <!-- petite-vue：後台登入 -->
+        <div class="sheet" v-if="state.sheet==='password'">
+            <div class="sheet-hd"><div class="nm">後台登入</div><button class="sheet-x" @click="hideOverlay()">✕</button></div>
+            <div class="sheet-body">
+                <p class="sec-lbl">請輸入密碼</p>
+                <input class="form-in" type="password" inputmode="numeric" placeholder="密碼" autocomplete="off" v-model="state.pw" @keydown.enter="adminUnlock()" @vue:mounted="$el.focus()">
+                <p style="font-size:12px;color:var(--ink-faint);margin:8px 2px 0;line-height:1.5">※ 密碼區分大小寫、全形半形與符號</p>
+                <p v-if="state.pwErr" style="font-size:13px;color:#c0392b;margin:8px 2px 0">密碼錯誤，請再試一次</p>
+            </div>
+            <div class="sheet-foot">
+                <button class="add-btn" @click="adminUnlock()"><span>進入後台</span><span></span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="update-banner" v-if="state.updateReady" @click="applyUpdate()">🆕 有新版本，點此更新（{{ appVersion }} → {{ state.latestVersion }}）</div>
+
+    <div class="toast" id="toast"></div>
+  </div><!-- /#root -->
+
+    <script>
+        // 澤川屋菜單資料 — 對應實際點菜單
+        // 之後移植 React 時可直接當 seed data 來源
+
+        // ===== 出廠預設菜單（種子範本）=====
+        // 注意：執行期間的「真相」是 state.menu（由 IndexedDB menu store 載入、後台可編輯）。
+        // 這個 MENU 只當：① 首次啟動/DB 為空時的種子 ② 匯入無菜單時的補植 ③「還原原廠菜單」來源。
+        // 模型為「攤平兩層」：分類(category) → 品項(item)。每個品項都是獨立完整品名（如「原味豬肉丼」）。
+        //   - 品項 modifierIds 非空 → 點了開選項彈窗；空 → 點一下 +1。
+        //   - creditEligible：能否被套餐小菜額度折抵（原 40 元小菜＝true，溏心蛋 20 也可湊）。
+        //   - sideCredit：此品項本身給幾道小菜折抵額度（優惠餐＝1）。
+        //   - isMiso：是否為「套餐自動帶的味噌湯」目標（與 config.misoItemId 對應）。
+        const MENU = {
+            config: { creditSidePrice: 40, misoItemId: 'p_miso' },
+            // 加購（與品項解耦，品項用 modifierIds 引用）
+            modifiers: [
+                { id: 'm_set', name: '套餐（小菜+味噌湯）', price: 45, sideCredit: 1, withMiso: true, sort: 0 },
+                { id: 'm_meat', name: '肉加量', price: 40, sort: 1 },
+                { id: 'm_rice', name: '加飯', price: 10, sort: 2 },
+                { id: 'm_noodle', name: '加麵', price: 20, sort: 3 },
+            ],
+            // 折扣活動（整單折扣層）；type: 'percent'（打折%）| 'amount'（定額折抵$）
+            discounts: [
+                { id: 'd_10pct', label: '全單9折', type: 'percent', value: 10, sort: 0 },
+            ],
+            categories: [
+                {
+                    id: 'c_combo', name: '優惠餐', sort: 0,
+                    items: [
+                        { id: 'cb_double', name: '雙饗丼優惠餐', price: 100, modifierIds: [], sideCredit: 1, sort: 0 },
+                    ],
+                },
+                {
+                    id: 'c_pork', name: '招牌豬肉丼', sort: 1,
+                    items: [
+                        { id: 'v_pk_plain', name: '原味豬肉丼', price: 99, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 0 },
+                        { id: 'v_pk_cheese', name: '起司豬肉丼', price: 115, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 1 },
+                        { id: 'v_pk_kimchi', name: '泡菜豬肉丼', price: 115, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 2 },
+                        { id: 'v_pk_salt', name: '蔥鹽豬肉丼', price: 115, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 3 },
+                        { id: 'v_pk_yuzu', name: '柚香蘿蔔豬肉丼', price: 115, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 4 },
+                        { id: 'v_pk_pepper', name: '椒麻豬肉丼', price: 115, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 5 },
+                        { id: 'v_pk_onion', name: '蔥浪豬肉丼', price: 130, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 6 },
+                        { id: 'v_pk_egg', name: '溏心瀑布豬肉丼', price: 140, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 7 },
+                    ],
+                },
+                {
+                    id: 'c_beef', name: '招牌牛肉丼', sort: 2,
+                    items: [
+                        { id: 'v_bf_plain', name: '原味牛肉丼', price: 125, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 0 },
+                        { id: 'v_bf_cheese', name: '起司牛肉丼', price: 140, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 1 },
+                        { id: 'v_bf_kimchi', name: '泡菜牛肉丼', price: 140, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 2 },
+                        { id: 'v_bf_salt', name: '蔥鹽牛肉丼', price: 140, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 3 },
+                        { id: 'v_bf_yuzu', name: '柚香蘿蔔牛肉丼', price: 140, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 4 },
+                        { id: 'v_bf_pepper', name: '椒麻牛肉丼', price: 140, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 5 },
+                        { id: 'v_bf_onion', name: '蔥浪牛肉丼', price: 155, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 6 },
+                        { id: 'v_bf_egg', name: '溏心瀑布牛肉丼', price: 165, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 7 },
+                    ],
+                },
+                {
+                    id: 'c_main', name: '主食', sort: 3,
+                    items: [
+                        { id: 'p_double', name: '牛豬雙饗丼', price: 115, modifierIds: ['m_set', 'm_meat', 'm_rice'], sort: 0 },
+                        { id: 'p_beefsoup_rice', name: '牛肉湯飯', price: 140, modifierIds: ['m_set', 'm_rice'], sort: 1 },
+                        { id: 'p_beef3_rice', name: '牛三寶湯飯', price: 150, modifierIds: ['m_set', 'm_rice'], sort: 2 },
+                        { id: 'p_beefsoup_noodle', name: '牛肉麵', price: 140, modifierIds: ['m_set', 'm_noodle'], sort: 3 },
+                        { id: 'p_beef3_noodle', name: '牛三寶麵', price: 150, modifierIds: ['m_set', 'm_noodle'], sort: 4 },
+                    ],
+                },
+                {
+                    id: 'c_side', name: '加點小菜', sort: 4,
+                    items: [
+                        { id: 'p_egg', name: '溏心蛋', price: 20, modifierIds: [], creditEligible: true, sort: 0 },
+                        { id: 'p_kimchi', name: '韓式泡菜', price: 40, modifierIds: [], creditEligible: true, sort: 1 },
+                        { id: 'p_gkimchi', name: '黃金泡菜', price: 40, modifierIds: [], creditEligible: true, sort: 2 },
+                        { id: 'p_kelp', name: '黃金海帶絲', price: 40, modifierIds: [], creditEligible: true, sort: 3 },
+                        { id: 'p_yuzu', name: '柚香蘿蔔', price: 40, modifierIds: [], creditEligible: true, sort: 4 },
+                        { id: 'p_edamame', name: '涼拌毛豆莢', price: 40, modifierIds: [], creditEligible: true, sort: 5 },
+                        { id: 'p_onion', name: '和風洋蔥', price: 40, modifierIds: [], creditEligible: true, sort: 6 },
+                        { id: 'p_tofu', name: '涼拌豆腐', price: 40, modifierIds: [], creditEligible: true, sort: 7 },
+                    ],
+                },
+                {
+                    id: 'c_other', name: '其他加點', sort: 5,
+                    items: [
+                        { id: 'p_miso', name: '柴魚昆布味噌湯', price: 25, modifierIds: [], isMiso: true, sort: 0 },
+                        { id: 'p_platter', name: '牛三寶拼盤', price: 100, modifierIds: [], sort: 1 },
+                    ],
+                },
+            ],
+        };
+
+    </script>
+    <script>/* petite-vue 0.4.1 iife 內嵌（離線單檔用，請勿手改）*/
+var pn=Object.defineProperty,hn=(e,t,n)=>t in e?pn(e,t,{enumerable:!0,configurable:!0,writable:!0,value:n}):e[t]=n,C=(e,t,n)=>(hn(e,"symbol"!=typeof t?t+"":t,n),n),PetiteVue=function(e){"use strict";function t(e){if(a(e)){const n={};for(let s=0;s<e.length;s++){const i=e[s],o=d(i)?r(i):t(i);if(o)for(const e in o)n[e]=o[e]}return n}return d(e)||g(e)?e:void 0}const n=/;(?![^(]*\))/g,s=/:(.+)/;function r(e){const t={};return e.split(n).forEach((e=>{if(e){const n=e.split(s);n.length>1&&(t[n[0].trim()]=n[1].trim())}})),t}function i(e){let t="";if(d(e))t=e;else if(a(e))for(let n=0;n<e.length;n++){const s=i(e[n]);s&&(t+=s+" ")}else if(g(e))for(const n in e)e[n]&&(t+=n+" ");return t.trim()}function o(e,t){if(e===t)return!0;let n=h(e),s=h(t);if(n||s)return!(!n||!s)&&e.getTime()===t.getTime();if(n=a(e),s=a(t),n||s)return!(!n||!s)&&function(e,t){if(e.length!==t.length)return!1;let n=!0;for(let s=0;n&&s<e.length;s++)n=o(e[s],t[s]);return n}(e,t);if(n=g(e),s=g(t),n||s){if(!n||!s)return!1;if(Object.keys(e).length!==Object.keys(t).length)return!1;for(const n in e){const s=e.hasOwnProperty(n),r=t.hasOwnProperty(n);if(s&&!r||!s&&r||!o(e[n],t[n]))return!1}}return String(e)===String(t)}function c(e,t){return e.findIndex((e=>o(e,t)))}const l=Object.assign,f=Object.prototype.hasOwnProperty,u=(e,t)=>f.call(e,t),a=Array.isArray,p=e=>"[object Map]"===y(e),h=e=>e instanceof Date,d=e=>"string"==typeof e,m=e=>"symbol"==typeof e,g=e=>null!==e&&"object"==typeof e,v=Object.prototype.toString,y=e=>v.call(e),b=e=>d(e)&&"NaN"!==e&&"-"!==e[0]&&""+parseInt(e,10)===e,x=e=>{const t=Object.create(null);return n=>t[n]||(t[n]=e(n))},_=/-(\w)/g,w=x((e=>e.replace(_,((e,t)=>t?t.toUpperCase():"")))),$=/\B([A-Z])/g,k=x((e=>e.replace($,"-$1").toLowerCase())),O=e=>{const t=parseFloat(e);return isNaN(t)?e:t};function S(e,t){(t=t||undefined)&&t.active&&t.effects.push(e)}const E=e=>{const t=new Set(e);return t.w=0,t.n=0,t},j=e=>(e.w&N)>0,A=e=>(e.n&N)>0,P=new WeakMap;let R=0,N=1;const T=[];let M;const B=Symbol(""),L=Symbol("");class W{constructor(e,t=null,n){this.fn=e,this.scheduler=t,this.active=!0,this.deps=[],S(this,n)}run(){if(!this.active)return this.fn();if(!T.includes(this))try{return T.push(M=this),F.push(V),V=!0,N=1<<++R,R<=30?(({deps:e})=>{if(e.length)for(let t=0;t<e.length;t++)e[t].w|=N})(this):I(this),this.fn()}finally{R<=30&&(e=>{const{deps:t}=e;if(t.length){let n=0;for(let s=0;s<t.length;s++){const r=t[s];j(r)&&!A(r)?r.delete(e):t[n++]=r,r.w&=~N,r.n&=~N}t.length=n}})(this),N=1<<--R,z(),T.pop();const e=T.length;M=e>0?T[e-1]:void 0}}stop(){this.active&&(I(this),this.onStop&&this.onStop(),this.active=!1)}}function I(e){const{deps:t}=e;if(t.length){for(let n=0;n<t.length;n++)t[n].delete(e);t.length=0}}function K(e){e.effect.stop()}let V=!0;const F=[];function z(){const e=F.pop();V=void 0===e||e}function H(e,t,n){if(!V||void 0===M)return;let s=P.get(e);s||P.set(e,s=new Map);let r=s.get(n);r||s.set(n,r=E()),function(e,t){let n=!1;R<=30?A(e)||(e.n|=N,n=!j(e)):n=!e.has(M),n&&(e.add(M),M.deps.push(e))}(r)}function J(e,t,n,s,r,i){const o=P.get(e);if(!o)return;let c=[];if("clear"===t)c=[...o.values()];else if("length"===n&&a(e))o.forEach(((e,t)=>{("length"===t||t>=s)&&c.push(e)}));else switch(void 0!==n&&c.push(o.get(n)),t){case"add":a(e)?b(n)&&c.push(o.get("length")):(c.push(o.get(B)),p(e)&&c.push(o.get(L)));break;case"delete":a(e)||(c.push(o.get(B)),p(e)&&c.push(o.get(L)));break;case"set":p(e)&&c.push(o.get(B))}if(1===c.length)c[0]&&Z(c[0]);else{const e=[];for(const t of c)t&&e.push(...t);Z(E(e))}}function Z(e,t){for(const n of a(e)?e:[...e])(n!==M||n.allowRecurse)&&(n.scheduler?n.scheduler():n.run())}const q=function(e,t){const n=Object.create(null),s=e.split(",");for(let r=0;r<s.length;r++)n[s[r]]=!0;return t?e=>!!n[e.toLowerCase()]:e=>!!n[e]}("__proto__,__v_isRef,__isVue"),D=new Set(Object.getOwnPropertyNames(Symbol).map((e=>Symbol[e])).filter(m)),G=X(),U=X(!0),Q=function(){const e={};return["includes","indexOf","lastIndexOf"].forEach((t=>{e[t]=function(...e){const n=le(this);for(let t=0,r=this.length;t<r;t++)H(n,0,t+"");const s=n[t](...e);return-1===s||!1===s?n[t](...e.map(le)):s}})),["push","pop","shift","unshift","splice"].forEach((t=>{e[t]=function(...e){F.push(V),V=!1;const n=le(this)[t].apply(this,e);return z(),n}})),e}();function X(e=!1,t=!1){return function(n,s,r){if("__v_isReactive"===s)return!e;if("__v_isReadonly"===s)return e;if("__v_raw"===s&&r===(e?t?re:se:t?ne:te).get(n))return n;const i=a(n);if(!e&&i&&u(Q,s))return Reflect.get(Q,s,r);const o=Reflect.get(n,s,r);return(m(s)?D.has(s):q(s))||(e||H(n,0,s),t)?o:fe(o)?i&&b(s)?o:o.value:g(o)?e?function(e){return ce(e,!0,ee,null,se)}(o):oe(o):o}}const Y={get:G,set:function(e=!1){return function(t,n,s,r){let i=t[n];if(!e&&!function(e){return!(!e||!e.__v_isReadonly)}(s)&&(s=le(s),i=le(i),!a(t)&&fe(i)&&!fe(s)))return i.value=s,!0;const o=a(t)&&b(n)?Number(n)<t.length:u(t,n),c=Reflect.set(t,n,s,r);return t===le(r)&&(o?((e,t)=>!Object.is(e,t))(s,i)&&J(t,"set",n,s):J(t,"add",n,s)),c}}(),deleteProperty:function(e,t){const n=u(e,t);e[t];const s=Reflect.deleteProperty(e,t);return s&&n&&J(e,"delete",t,void 0),s},has:function(e,t){const n=Reflect.has(e,t);return(!m(t)||!D.has(t))&&H(e,0,t),n},ownKeys:function(e){return H(e,0,a(e)?"length":B),Reflect.ownKeys(e)}},ee={get:U,set:(e,t)=>!0,deleteProperty:(e,t)=>!0},te=new WeakMap,ne=new WeakMap,se=new WeakMap,re=new WeakMap;function ie(e){return e.__v_skip||!Object.isExtensible(e)?0:function(e){switch(e){case"Object":case"Array":return 1;case"Map":case"Set":case"WeakMap":case"WeakSet":return 2;default:return 0}}((e=>y(e).slice(8,-1))(e))}function oe(e){return e&&e.__v_isReadonly?e:ce(e,!1,Y,null,te)}function ce(e,t,n,s,r){if(!g(e)||e.__v_raw&&(!t||!e.__v_isReactive))return e;const i=r.get(e);if(i)return i;const o=ie(e);if(0===o)return e;const c=new Proxy(e,2===o?s:n);return r.set(e,c),c}function le(e){const t=e&&e.__v_raw;return t?le(t):e}function fe(e){return Boolean(e&&!0===e.__v_isRef)}Promise.resolve();let ue=!1;const ae=[],pe=Promise.resolve(),he=e=>pe.then(e),de=e=>{ae.includes(e)||ae.push(e),ue||(ue=!0,he(me))},me=()=>{for(const e of ae)e();ae.length=0,ue=!1},ge=/^(spellcheck|draggable|form|list|type)$/,ve=({el:e,get:t,effect:n,arg:s,modifiers:r})=>{let i;"class"===s&&(e._class=e.className),n((()=>{let n=t();if(s)(null==r?void 0:r.camel)&&(s=w(s)),ye(e,s,n,i);else{for(const t in n)ye(e,t,n[t],i&&i[t]);for(const t in i)(!n||!(t in n))&&ye(e,t,null)}i=n}))},ye=(e,n,s,r)=>{if("class"===n)e.setAttribute("class",i(e._class?[e._class,s]:s)||"");else if("style"===n){s=t(s);const{style:n}=e;if(s)if(d(s))s!==r&&(n.cssText=s);else{for(const e in s)xe(n,e,s[e]);if(r&&!d(r))for(const e in r)null==s[e]&&xe(n,e,"")}else e.removeAttribute("style")}else e instanceof SVGElement||!(n in e)||ge.test(n)?"true-value"===n?e._trueValue=s:"false-value"===n?e._falseValue=s:null!=s?e.setAttribute(n,s):e.removeAttribute(n):(e[n]=s,"value"===n&&(e._value=s))},be=/\s*!important$/,xe=(e,t,n)=>{a(n)?n.forEach((n=>xe(e,t,n))):t.startsWith("--")?e.setProperty(t,n):be.test(n)?e.setProperty(k(t),n.replace(be,""),"important"):e[t]=n},_e=(e,t)=>{const n=e.getAttribute(t);return null!=n&&e.removeAttribute(t),n},we=(e,t,n,s)=>{e.addEventListener(t,n,s)},$e=/^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/,ke=["ctrl","shift","alt","meta"],Oe={stop:e=>e.stopPropagation(),prevent:e=>e.preventDefault(),self:e=>e.target!==e.currentTarget,ctrl:e=>!e.ctrlKey,shift:e=>!e.shiftKey,alt:e=>!e.altKey,meta:e=>!e.metaKey,left:e=>"button"in e&&0!==e.button,middle:e=>"button"in e&&1!==e.button,right:e=>"button"in e&&2!==e.button,exact:(e,t)=>ke.some((n=>e[`${n}Key`]&&!t[n]))},Se=({el:e,get:t,exp:n,arg:s,modifiers:r})=>{if(!s)return;let i=$e.test(n)?t(`(e => ${n}(e))`):t(`($event => { ${n} })`);if("vue:mounted"!==s){if("vue:unmounted"===s)return()=>i();if(r){"click"===s&&(r.right&&(s="contextmenu"),r.middle&&(s="mouseup"));const e=i;i=t=>{if(!("key"in t)||k(t.key)in r){for(const e in r){const n=Oe[e];if(n&&n(t,r))return}return e(t)}}}we(e,s,i,r)}else he(i)},Ee=({el:e,get:t,effect:n})=>{n((()=>{e.textContent=Ce(t())}))},Ce=e=>null==e?"":g(e)?JSON.stringify(e,null,2):String(e),je=e=>"_value"in e?e._value:e.value,Ae=(e,t)=>{const n=t?"_trueValue":"_falseValue";return n in e?e[n]:t},Pe=e=>{e.target.composing=!0},Re=e=>{const t=e.target;t.composing&&(t.composing=!1,Ne(t,"input"))},Ne=(e,t)=>{const n=document.createEvent("HTMLEvents");n.initEvent(t,!0,!0),e.dispatchEvent(n)},Te=Object.create(null),Me=(e,t,n)=>Be(e,`return(${t})`,n),Be=(e,t,n)=>{const s=Te[t]||(Te[t]=Le(t));try{return s(e,n)}catch(r){console.error(r)}},Le=e=>{try{return new Function("$data","$el",`with($data){${e}}`)}catch(t){return console.error(`${t.message} in expression: ${e}`),()=>{}}},We={bind:ve,on:Se,show:({el:e,get:t,effect:n})=>{const s=e.style.display;n((()=>{e.style.display=t()?s:"none"}))},text:Ee,html:({el:e,get:t,effect:n})=>{n((()=>{e.innerHTML=t()}))},model:({el:e,exp:t,get:n,effect:s,modifiers:r})=>{const i=e.type,l=n(`(val) => { ${t} = val }`),{trim:f,number:u="number"===i}=r||{};if("SELECT"===e.tagName){const t=e;we(e,"change",(()=>{const e=Array.prototype.filter.call(t.options,(e=>e.selected)).map((e=>u?O(je(e)):je(e)));l(t.multiple?e:e[0])})),s((()=>{const e=n(),s=t.multiple;for(let n=0,r=t.options.length;n<r;n++){const r=t.options[n],i=je(r);if(s)a(e)?r.selected=c(e,i)>-1:r.selected=e.has(i);else if(o(je(r),e))return void(t.selectedIndex!==n&&(t.selectedIndex=n))}!s&&-1!==t.selectedIndex&&(t.selectedIndex=-1)}))}else if("checkbox"===i){let t;we(e,"change",(()=>{const t=n(),s=e.checked;if(a(t)){const n=je(e),r=c(t,n),i=-1!==r;if(s&&!i)l(t.concat(n));else if(!s&&i){const e=[...t];e.splice(r,1),l(e)}}else l(Ae(e,s))})),s((()=>{const s=n();a(s)?e.checked=c(s,je(e))>-1:s!==t&&(e.checked=o(s,Ae(e,!0))),t=s}))}else if("radio"===i){let t;we(e,"change",(()=>{l(je(e))})),s((()=>{const s=n();s!==t&&(e.checked=o(s,je(e)))}))}else{const t=e=>f?e.trim():u?O(e):e;we(e,"compositionstart",Pe),we(e,"compositionend",Re),we(e,(null==r?void 0:r.lazy)?"change":"input",(()=>{e.composing||l(t(e.value))})),f&&we(e,"change",(()=>{e.value=e.value.trim()})),s((()=>{if(e.composing)return;const s=e.value,r=n();document.activeElement===e&&t(s)===r||s!==r&&(e.value=r)}))}},effect:({el:e,ctx:t,exp:n,effect:s})=>{he((()=>s((()=>Be(t.scope,n,e)))))}},Ie=/([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/,Ke=/,([^,\}\]]*)(?:,([^,\}\]]*))?$/,Ve=/^\(|\)$/g,Fe=/^[{[]\s*((?:[\w_$]+\s*,?\s*)+)[\]}]$/,ze=(e,t,n)=>{const s=t.match(Ie);if(!s)return;const r=e.nextSibling,i=e.parentElement,o=new Text("");i.insertBefore(o,e),i.removeChild(e);const c=s[2].trim();let l,f,u,p,h=s[1].trim().replace(Ve,"").trim(),d=!1,m="key",v=e.getAttribute(m)||e.getAttribute(m=":key")||e.getAttribute(m="v-bind:key");v&&(e.removeAttribute(m),"key"===m&&(v=JSON.stringify(v))),(p=h.match(Ke))&&(h=h.replace(Ke,"").trim(),f=p[1].trim(),p[2]&&(u=p[2].trim())),(p=h.match(Fe))&&(l=p[1].split(",").map((e=>e.trim())),d="["===h[0]);let y,b,x,_=!1;const w=(e,t,s,r)=>{const i={};l?l.forEach(((e,n)=>i[e]=t[d?n:e])):i[h]=t,r?(f&&(i[f]=r),u&&(i[u]=s)):f&&(i[f]=s);const o=et(n,i),c=v?Me(o.scope,v):s;return e.set(c,s),o.key=c,o},$=(t,n)=>{const s=new nt(e,t);return s.key=t.key,s.insert(i,n),s};return n.effect((()=>{const e=Me(n.scope,c),t=x;if([b,x]=(e=>{const t=new Map,n=[];if(a(e))for(let s=0;s<e.length;s++)n.push(w(t,e[s],s));else if("number"==typeof e)for(let s=0;s<e;s++)n.push(w(t,s+1,s));else if(g(e)){let s=0;for(const r in e)n.push(w(t,e[r],s++,r))}return[n,t]})(e),_){for(let t=0;t<y.length;t++)x.has(y[t].key)||y[t].remove();const e=[];let n,s,r=b.length;for(;r--;){const c=b[r],l=t.get(c.key);let f;null==l?f=$(c,n?n.el:o):(f=y[l],Object.assign(f.ctx.scope,c.scope),l!==r&&(y[l+1]!==n||s===n)&&(s=f,f.insert(i,n?n.el:o))),e.unshift(n=f)}y=e}else y=b.map((e=>$(e,o))),_=!0})),r},He=({el:e,ctx:{scope:{$refs:t}},get:n,effect:s})=>{let r;return s((()=>{const s=n();t[s]=e,r&&s!==r&&delete t[r],r=s})),()=>{r&&delete t[r]}},Je=/^(?:v-|:|@)/,Ze=/\.([\w-]+)/g;let qe=!1;const De=(e,t)=>{const n=e.nodeType;if(1===n){const n=e;if(n.hasAttribute("v-pre"))return;let s;if(_e(n,"v-cloak"),s=_e(n,"v-if"))return((e,t,n)=>{const s=e.parentElement,r=new Comment("v-if");s.insertBefore(r,e);const i=[{exp:t,el:e}];let o,c;for(;(o=e.nextElementSibling)&&(c=null,""===_e(o,"v-else")||(c=_e(o,"v-else-if")));)s.removeChild(o),i.push({exp:c,el:o});const l=e.nextSibling;s.removeChild(e);let f,u=-1;const a=()=>{f&&(s.insertBefore(r,f.el),f.remove(),f=void 0)};return n.effect((()=>{for(let e=0;e<i.length;e++){const{exp:t,el:o}=i[e];if(!t||Me(n.scope,t))return void(e!==u&&(a(),f=new nt(o,n),f.insert(s,r),s.removeChild(r),u=e))}u=-1,a()})),l})(n,s,t);if(s=_e(n,"v-for"))return ze(n,s,t);if((s=_e(n,"v-scope"))||""===s){const e=s?Me(t.scope,s):{};t=et(t,e),e.$template&&Xe(n,e.$template)}const r=null!=_e(n,"v-once");r&&(qe=!0),(s=_e(n,"ref"))&&Qe(n,He,`"${s}"`,t),Ge(n,t);const i=[];for(const{name:e,value:o}of[...n.attributes])Je.test(e)&&"v-cloak"!==e&&("v-model"===e?i.unshift([e,o]):"@"===e[0]||/^v-on\b/.test(e)?i.push([e,o]):Ue(n,e,o,t));for(const[e,o]of i)Ue(n,e,o,t);r&&(qe=!1)}else if(3===n){const n=e.data;if(n.includes(t.delimiters[0])){let s,r=[],i=0;for(;s=t.delimitersRE.exec(n);){const e=n.slice(i,s.index);e&&r.push(JSON.stringify(e)),r.push(`$s(${s[1]})`),i=s.index+s[0].length}i<n.length&&r.push(JSON.stringify(n.slice(i))),Qe(e,Ee,r.join("+"),t)}}else 11===n&&Ge(e,t)},Ge=(e,t)=>{let n=e.firstChild;for(;n;)n=De(n,t)||n.nextSibling},Ue=(e,t,n,s)=>{let r,i,o;if(":"===(t=t.replace(Ze,((e,t)=>((o||(o={}))[t]=!0,""))))[0])r=ve,i=t.slice(1);else if("@"===t[0])r=Se,i=t.slice(1);else{const e=t.indexOf(":"),n=e>0?t.slice(2,e):t.slice(2);r=We[n]||s.dirs[n],i=e>0?t.slice(e+1):void 0}r&&(r===ve&&"ref"===i&&(r=He),Qe(e,r,n,s,i,o),e.removeAttribute(t))},Qe=(e,t,n,s,r,i)=>{const o=t({el:e,get:(t=n)=>Me(s.scope,t,e),effect:s.effect,ctx:s,exp:n,arg:r,modifiers:i});o&&s.cleanups.push(o)},Xe=(e,t)=>{if("#"!==t[0])e.innerHTML=t;else{const n=document.querySelector(t);e.appendChild(n.content.cloneNode(!0))}},Ye=e=>{const t={delimiters:["{{","}}"],delimitersRE:/\{\{([^]+?)\}\}/g,...e,scope:e?e.scope:oe({}),dirs:e?e.dirs:{},effects:[],blocks:[],cleanups:[],effect:e=>{if(qe)return de(e),e;const n=function(e,t){e.effect&&(e=e.effect.fn);const n=new W(e);t&&(l(n,t),t.scope&&S(n,t.scope)),(!t||!t.lazy)&&n.run();const s=n.run.bind(n);return s.effect=n,s}(e,{scheduler:()=>de(n)});return t.effects.push(n),n}};return t},et=(e,t={})=>{const n=e.scope,s=Object.create(n);Object.defineProperties(s,Object.getOwnPropertyDescriptors(t)),s.$refs=Object.create(n.$refs);const r=oe(new Proxy(s,{set:(e,t,s,i)=>i!==r||e.hasOwnProperty(t)?Reflect.set(e,t,s,i):Reflect.set(n,t,s)}));return tt(r),{...e,scope:r}},tt=e=>{for(const t of Object.keys(e))"function"==typeof e[t]&&(e[t]=e[t].bind(e))};class nt{constructor(e,t,n=!1){C(this,"template"),C(this,"ctx"),C(this,"key"),C(this,"parentCtx"),C(this,"isFragment"),C(this,"start"),C(this,"end"),this.isFragment=e instanceof HTMLTemplateElement,n?this.template=e:this.isFragment?this.template=e.content.cloneNode(!0):this.template=e.cloneNode(!0),n?this.ctx=t:(this.parentCtx=t,t.blocks.push(this),this.ctx=Ye(t)),De(this.template,this.ctx)}get el(){return this.start||this.template}insert(e,t=null){if(this.isFragment)if(this.start){let n,s=this.start;for(;s&&(n=s.nextSibling,e.insertBefore(s,t),s!==this.end);)s=n}else this.start=new Text(""),this.end=new Text(""),e.insertBefore(this.end,t),e.insertBefore(this.start,this.end),e.insertBefore(this.template,this.end);else e.insertBefore(this.template,t)}remove(){if(this.parentCtx&&((e,t)=>{const n=e.indexOf(t);n>-1&&e.splice(n,1)})(this.parentCtx.blocks,this),this.start){const e=this.start.parentNode;let t,n=this.start;for(;n&&(t=n.nextSibling,e.removeChild(n),n!==this.end);)n=t}else this.template.parentNode.removeChild(this.template);this.teardown()}teardown(){this.ctx.blocks.forEach((e=>{e.teardown()})),this.ctx.effects.forEach(K),this.ctx.cleanups.forEach((e=>e()))}}const st=e=>e.replace(/[-.*+?^${}()|[\]\/\\]/g,"\\$&"),rt=e=>{const t=Ye();if(e&&(t.scope=oe(e),tt(t.scope),e.$delimiters)){const[n,s]=t.delimiters=e.$delimiters;t.delimitersRE=new RegExp(st(n)+"([^]+?)"+st(s),"g")}let n;return t.scope.$s=Ce,t.scope.$nextTick=he,t.scope.$refs=Object.create(null),{directive(e,n){return n?(t.dirs[e]=n,this):t.dirs[e]},mount(e){if("string"==typeof e&&!(e=document.querySelector(e)))return;let s;return s=(e=e||document.documentElement).hasAttribute("v-scope")?[e]:[...e.querySelectorAll("[v-scope]")].filter((e=>!e.matches("[v-scope] [v-scope]"))),s.length||(s=[e]),n=s.map((e=>new nt(e,t,!0))),this},unmount(){n.forEach((e=>e.teardown()))}}},it=document.currentScript;return it&&it.hasAttribute("init")&&rt().mount(),e.createApp=rt,e.nextTick=he,e.reactive=oe,Object.defineProperty(e,"__esModule",{value:!0}),e[Symbol.toStringTag]="Module",e}({});
+    </script>
+    <script>
+        // ========== 版本戳（CI 部署時注入）==========
+        // deploy.yml 的「組裝」步驟會把 v20260628.0121 換成台北時間戳（如 v20260627.1803）。
+        // 本機直接開檔不會被替換 → 顯示「本機開發版」，且不觸發新版偵測（見 watchForUpdate）。
+        const APP_VERSION = 'v20260628.0121';
+        const APP_VERSION_LABEL = APP_VERSION.charAt(0) === 'v' ? APP_VERSION : '本機開發版';
+
+        // ========== 全店時間（單一真相）==========
+        // 原則：DB 一律存 UTC（toISOString），只在「畫面顯示／匯出檔名／日月報分桶」時換算到本時區。
+        // 用 IANA 時區名（非數字偏移）→ DST-safe、與裝置時區設定無關。台灣固定 +8、無日光節約。
+        const SHOP_TZ = 'Asia/Taipei';
+        // 把任一時刻拆成本時區的年月日時分（皆字串，月/日/時/分補零）
+        function shopParts(d) {
+            const f = new Intl.DateTimeFormat('en-CA', {
+                timeZone: SHOP_TZ, hour12: false,
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+            });
+            const o = {};
+            for (const { type, value } of f.formatToParts(new Date(d))) o[type] = value;
+            return o;   // { year, month, day, hour, minute }
+        }
+        const shopDateStr = d => { const p = shopParts(d); return `${p.year}-${p.month}-${p.day}`; };              // YYYY-MM-DD
+        const shopDateTime = d => { const p = shopParts(d); return `${+p.month}/${+p.day} ${p.hour}:${p.minute}`; }; // M/D HH:MM
+        const shopStamp = d => { const p = shopParts(d); return `${p.year}-${p.month}-${p.day}-${p.hour}-${p.minute}`; }; // 匯出檔名用
+
+        // ========== 本地資料庫（IndexedDB 封裝）==========
+        // 三個 store：orders（訂單記錄）、ingredients（食材庫存）、meta（設定/流水號）
+        const DB = {
+            _db: null,
+            async open() {
+                if (this._db) return this._db;
+                return new Promise((resolve, reject) => {
+                    const req = indexedDB.open('sawakawaya_pos', 2);
+                    req.onupgradeneeded = e => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('orders')) {
+                            const s = db.createObjectStore('orders', { keyPath: 'id' });
+                            s.createIndex('paidAt', 'paidAt');
+                        }
+                        if (!db.objectStoreNames.contains('ingredients'))
+                            db.createObjectStore('ingredients', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('meta'))
+                            db.createObjectStore('meta', { keyPath: 'key' });
+                        // v2：菜單 store（後台可編輯菜單；keyPath 'key'，存 categories/modifiers/discounts/config 四份文件）
+                        if (!db.objectStoreNames.contains('menu'))
+                            db.createObjectStore('menu', { keyPath: 'key' });
+                    };
+                    req.onsuccess = e => { this._db = e.target.result; resolve(this._db); };
+                    req.onerror = e => reject(e.target.error);
+                });
+            },
+            async _tx(store, mode, fn) {
+                const db = await this.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(store, mode);
+                    const st = tx.objectStore(store);
+                    const result = fn(st);
+                    tx.oncomplete = () => resolve(result._res !== undefined ? result._res : result);
+                    tx.onerror = () => reject(tx.error);
+                });
+            },
+            put(store, value) {
+                return this._tx(store, 'readwrite', st => { st.put(value); return {}; });
+            },
+            delete(store, key) {
+                return this._tx(store, 'readwrite', st => { st.delete(key); return {}; });
+            },
+            getAll(store) {
+                return this._tx(store, 'readonly', st => {
+                    const holder = {};
+                    st.getAll().onsuccess = e => { holder._res = e.target.result; };
+                    return holder;
+                });
+            },
+            get(store, key) {
+                return this._tx(store, 'readonly', st => {
+                    const holder = {};
+                    st.get(key).onsuccess = e => { holder._res = e.target.result; };
+                    return holder;
+                });
+            },
+        };
+
+        // ========== 狀態 ==========
+        // 深拷貝（脫 proxy / 種子複製）：菜單皆為純 JSON 資料，round-trip 即可
+        const clone = o => JSON.parse(JSON.stringify(o));
+        // 單一反應式真相：已轉 petite-vue 的畫面與尚未轉的舊畫面共用同一份 state
+        const state = PetiteVue.reactive({
+            updateReady: false,    // 偵測到線上有新版 → 顯示「點此更新」橫幅（不自動重載，避免打斷正在點的單）
+            latestVersion: '',     // 偵測到的線上新版本戳（顯示在橫幅上）
+            menu: clone(MENU),     // 執行期菜單真相（啟動時由 menu store 覆寫；後台可編輯）
+            activeCat: MENU.categories[0].id,
+            cart: [],              // 每列：{ lineKey, name, sub, unitPrice, qty, refTileId }
+            discount: null,        // { id, label, type, value }
+            payMethod: null,
+            cashReceived: 0,
+            orderSeq: 1,           // 下一筆訂單的當日序號（啟動時由 meta 載入；每日重置）
+            orderDate: localDateStr(new Date()),  // orderSeq 所屬日期（跨日自動歸 1）
+            sheet: null,           // 目前開啟的 petite-vue 彈窗：null | 'item' | 'checkout'
+            item: null,            // 商品彈窗狀態 { product, variant, mods, modQty, basePrice, displayName, qty, editing }
+            screen: 'pos',         // 主畫面：'pos' | 'admin'
+            adminTab: 'ingredients', // 後台分頁：ingredients | menu | orders | daily | monthly | backup
+            menuTab: 'products',   // 菜單分頁子頁籤：products | modifiers | discounts
+            ingredients: [],       // 庫存品項（反應式，取代舊的 let ingredients）
+            collapsedCats: {},     // 庫存分類收合狀態
+            orders: [],            // 訂單（反應式，報表/訂單列表共用）
+            orderSel: [],          // 訂單管理勾選的 id（取代舊的 Set）
+            openOrders: {},        // 訂單管理：展開看細項的訂單 id
+            dailyDate: localDateStr(new Date()),          // 日報日期 YYYY-MM-DD
+            monthlyMonth: localDateStr(new Date()).slice(0, 7), // 月報月份 YYYY-MM
+            lastBackup: null,      // 上次備份時間 ISO
+            // 各 petite-vue 彈窗的暫存狀態（state.sheet 決定哪個顯示）
+            editIng: null,         // 食材編輯表單 { isNew, id, name, qty, unit, safeQty, vendor, category, sort }
+            delIng: null,          // 待刪食材
+            delOrderIds: [],       // 待刪訂單 id
+            importInfo: null,      // 匯入確認 { data, oCount, iCount, mCount }
+            pw: '',                // 後台密碼輸入
+            pwErr: false,          // 密碼錯誤旗標
+            // 菜單編輯彈窗暫存（state.sheet 決定哪個顯示）
+            editCat: null,         // 分類表單 { isNew, id, name, sort, hidden }
+            editMenuItem: null,    // 品項表單 { isNew, id, categoryId, name, price, modifierIds, sideCredit, creditEligible, isMiso, sort, hidden }
+            editMod: null,         // 加購表單 { isNew, id, name, price, sideCredit, withMiso, sort, hidden }
+            editDisc: null,        // 折扣表單 { isNew, id, label, type, value, sort, hidden }
+            confirmRestore: false, // 還原原廠菜單確認
+        });
+
+        const $ = s => document.querySelector(s);
+        const money = n => '$' + Math.round(n).toLocaleString();
+
+        // ========== 合併鍵：商品+變體+加購+備註 ==========
+        function makeLineKey({ productId, variantId, modifierIds = [], note = '', comboSideId = '' }) {
+            const mods = [...modifierIds].sort().join(',');
+            return [productId, variantId || '', mods, comboSideId, note].join('|');
+        }
+
+        function addLine(item) {
+            const key = makeLineKey(item);
+            const existing = state.cart.find(l => l.lineKey === key);
+            if (existing) {
+                existing.qty += item.qty;
+            } else {
+                state.cart.push({ ...item, lineKey: key });
+            }
+        }
+
+        function changeQty(lineKey, delta) {
+            const l = state.cart.find(x => x.lineKey === lineKey);
+            if (!l) return;
+            l.qty += delta;
+            if (l.qty <= 0) state.cart = state.cart.filter(x => x.lineKey !== lineKey);
+        }
+
+        function removeLine(lineKey) {
+            state.cart = state.cart.filter(x => x.lineKey !== lineKey);
+        }
+
+        // ========== 菜單存取小工具（皆讀 state.menu，反應式）==========
+        const bySort = (a, b) => (a.sort || 0) - (b.sort || 0);
+        // 過濾停售 + 依 sort 排序（POS 顯示用；不改原陣列）
+        const visibleSorted = list => (list || []).filter(x => !x.hidden).slice().sort(bySort);
+        function modById(id) { return (state.menu.modifiers || []).find(m => m.id === id); }
+        // 找品項（跨所有分類）；回傳 { item, cat } 或 null
+        function findItem(itemId) {
+            for (const c of state.menu.categories) {
+                const it = (c.items || []).find(i => i.id === itemId);
+                if (it) return { item: it, cat: c };
+            }
+            return null;
+        }
+        // 取某品項可用的加購（依 modifierIds，過濾停售，依加購自身 sort）
+        function getModifiersFor(item) {
+            return (item.modifierIds || [])
+                .map(id => modById(id))
+                .filter(m => m && !m.hidden)
+                .sort(bySort);
+        }
+
+        // ========== 金額 ==========
+        // 統計購物車產生的小菜折抵額度總數
+        function totalSideCredits() {
+            let credits = 0;
+            for (const l of state.cart) {
+                // 品項本身自帶 sideCredit（如雙饗丼優惠餐）
+                if (l.sideCredit) credits += l.sideCredit * l.qty;
+                // 加購 +45 套餐帶 sideCredit
+                if (l.modifierIds) {
+                    for (const mid of l.modifierIds) {
+                        const m = modById(mid);
+                        if (m && m.sideCredit) credits += m.sideCredit * l.qty;
+                    }
+                }
+            }
+            return credits;
+        }
+
+        // 統計購物車裡可被折抵的小菜（加點小菜分類），回傳依單價排序的金額陣列
+        // 例：1個40元小菜 + 2顆20元蛋 → [40, 20, 20]
+        function creditableSideUnits() {
+            const units = [];
+            state.cart.forEach(l => {
+                if (l.isCreditableSide) {
+                    for (let i = 0; i < l.qty; i++) units.push(l.creditPrice || l.unitPrice);
+                }
+            });
+            // 由高到低排序：優先用 40 元的湊滿額度，剩餘額度再用 20 元蛋湊
+            return units.sort((a, b) => b - a);
+        }
+
+        // 相容舊呼叫：回傳可折抵小菜總「道數」（提醒用，非折抵金額依據）
+        function totalCreditableSides() {
+            return state.cart.reduce((s, l) => l.isCreditableSide ? s + l.qty : s, 0);
+        }
+
+        function calc() {
+            const subtotal = state.cart.reduce((s, l) => s + l.unitPrice * l.qty, 0);
+
+            // 套餐小菜額度折抵（以金額計）：
+            // 每個套餐額度價值 40 元。從「加點小菜」湊金額折抵：
+            // 40 元小菜 1 道折滿 1 額度；溏心蛋 20 元需 2 顆湊滿 1 額度。
+            const credits = totalSideCredits();          // 套餐給的額度數
+            const creditSidePrice = state.menu.config.creditSidePrice; // 每份額度價值（預設 40）
+            let budget = credits * creditSidePrice;       // 可折抵的總金額上限
+            const units = creditableSideUnits();          // [40, 40, 20, 20, ...]
+            let comboSideDiscount = 0;
+            for (const price of units) {
+                if (price <= budget) { comboSideDiscount += price; budget -= price; }
+                // budget 不足以折一整個品項就跳過（例如只剩 20 元預算遇到 40 元小菜，留著等 20 元蛋）
+            }
+            // 沒用完的額度（換算成還剩幾個額度，提醒用，無條件進位讓「還差一點」也提示）
+            const creditsUnused = Math.ceil(budget / creditSidePrice);
+
+            const afterCombo = subtotal - comboSideDiscount;
+
+            // 整單折扣（如全單9折）套用在折抵後金額上
+            let orderDiscAmt = 0;
+            if (state.discount && afterCombo > 0) {
+                orderDiscAmt = state.discount.type === 'percent'
+                    ? Math.round(afterCombo * state.discount.value / 100)
+                    : Math.min(state.discount.value, afterCombo);
+            }
+
+            return {
+                subtotal,
+                comboSideDiscount,
+                creditsUnused,
+                orderDiscAmt,
+                total: afterCombo - orderDiscAmt,
+            };
+        }
+
+        // 計算某 tile 在購物車內的總數（用於徽章）
+        function cartQtyForProduct(productId) {
+            return state.cart.filter(l => l.refTileId === productId).reduce((s, l) => s + l.qty, 0);
+        }
+
+        // ========== 純品項：點一下 +1 ==========
+        function addSimple(item, cat) {
+            addLine({
+                productId: item.id, variantId: null, modifierIds: [], note: '',
+                name: item.name, sub: '', unitPrice: item.price, qty: 1,
+                refTileId: item.id, categoryName: cat.name, mods: [],
+                // 折抵範圍：品項標了 creditEligible 才以單價金額參與湊抵
+                isCreditableSide: !!item.creditEligible,
+                creditPrice: item.creditEligible ? item.price : 0,
+                sideCredit: item.sideCredit || 0,
+            });
+            flash(`${item.name} +1`);
+        }
+
+        // ========== 商品彈窗（有加購的品項：丼飯口味 / 主食）==========
+        // 已轉 petite-vue：模板見 #overlay 內 v-if="state.sheet==='item'"，靠 state.item 驅動。
+        function openItemSheet(item, cat) {
+            const mods = getModifiersFor(item);
+            const modQty = {};
+            mods.forEach(m => modQty[m.id] = 0);
+            state.item = {
+                item, cat, mods, modQty,
+                basePrice: item.price,
+                displayName: item.name,
+                qty: 1, editing: false,
+            };
+            state.sheet = 'item';
+            showOverlay();
+        }
+
+        // 把超過主品數量的加購份數壓回上限
+        function clampMods() {
+            const it = state.item;
+            it.mods.forEach(m => {
+                if (it.modQty[m.id] > it.qty) it.modQty[m.id] = it.qty;
+            });
+        }
+
+        // 加入購物車：依加購組合自動拆列
+        // 例：3個丼飯，2個套餐、1個加飯 → 拆「丼飯+套餐×2」「丼飯+加飯×1」
+        function addItemToCart() {
+            const { item, cat, mods, basePrice, displayName: name } = state.item;
+            const totalQty = state.item.qty;
+            const perUnit = [];
+            for (let i = 0; i < totalQty; i++) {
+                perUnit.push(mods.filter(m => state.item.modQty[m.id] > i).map(m => m.id));
+            }
+            const groups = {};
+            perUnit.forEach(ids => {
+                const key = [...ids].sort().join(',');
+                if (!groups[key]) groups[key] = { ids, count: 0 };
+                groups[key].count++;
+            });
+            let misoQty = 0;
+            Object.values(groups).forEach(g => {
+                let unit = basePrice;
+                const names = [];
+                const modSnap = [];   // 加購快照（供訂單統計，與菜單解耦）
+                g.ids.forEach(id => {
+                    const m = mods.find(x => x.id === id);
+                    unit += m.price; names.push(m.name);
+                    modSnap.push({ id: m.id, name: m.name, price: m.price });
+                    if (m.withMiso) misoQty += g.count;
+                });
+                addLine({
+                    productId: item.id, variantId: null,
+                    modifierIds: g.ids, note: '',
+                    name,
+                    sub: names.join('、'),
+                    unitPrice: unit, qty: g.count,
+                    refTileId: item.id, categoryName: cat.name, mods: modSnap,
+                    isCreditableSide: !!item.creditEligible,
+                    creditPrice: item.creditEligible ? item.price : 0,
+                    sideCredit: item.sideCredit || 0,
+                });
+            });
+            if (misoQty > 0) {
+                const miso = findItem(state.menu.config.misoItemId);
+                addLine({
+                    productId: state.menu.config.misoItemId, variantId: null, modifierIds: [], note: '套餐附',
+                    name: miso ? miso.item.name : '味噌湯', sub: '套餐附贈', unitPrice: 0, qty: misoQty,
+                    refTileId: null, isFreebie: true, categoryName: miso ? miso.cat.name : '', mods: [],
+                });
+            }
+        }
+
+        // ========== 結帳彈窗 ==========
+        // 已轉 petite-vue：模板見 #overlay 內 v-if="state.sheet==='checkout'"，
+        // 直接綁 state.payMethod / state.cashReceived / state.discount 與 totals getter。
+        function openCheckout() {
+            closeCartPanel();
+            state.payMethod = 'cash';   // 預設現金
+            state.cashReceived = 0;
+            state.sheet = 'checkout';
+            showOverlay();
+        }
+
+        async function completeOrder() {
+            ensureOrderDay();   // 跨日則把當日序號歸 1，這筆即成為新一天的 #001
+            const c = calc();
+            const method = { cash: '現金', linepay: 'LINE Pay' }[state.payMethod];
+            const now = new Date();
+            // 訂單快照（報表用）
+            const order = {
+                id: 'ord_' + now.getTime() + '_' + Math.random().toString(36).slice(2, 7),
+                orderNo: '#' + String(state.orderSeq).padStart(3, '0'),
+                paidAt: now.toISOString(),
+                // 訂單為「自足快照」：含分類名/品名/定價/份數/加購快照，與菜單完全解耦
+                // → 日後改名/改價/停售都不影響歷史單；統計只讀這份快照（見 summarize）
+                items: state.cart.map(l => ({
+                    categoryName: l.categoryName || '',
+                    name: l.name, sub: l.sub, unitPrice: l.unitPrice, qty: l.qty,
+                    lineTotal: l.unitPrice * l.qty, productId: l.productId,  // productId 僅留作弱參考
+                    // 反應式 proxy 陣列 → 展開成純陣列再存（避免 DataCloneError）
+                    modifierIds: [...(l.modifierIds || [])],
+                    mods: (l.mods || []).map(m => ({ name: m.name, price: m.price })),  // 加購快照（統計用）
+                })),
+                subtotal: c.subtotal,
+                comboSideDiscount: c.comboSideDiscount,
+                orderDiscount: c.orderDiscAmt,
+                total: c.total,
+                paymentMethod: state.payMethod,
+                paymentLabel: method,
+                cashReceived: state.payMethod === 'cash' ? state.cashReceived : null,
+                change: state.payMethod === 'cash' ? state.cashReceived - c.total : null,
+            };
+            try {
+                await DB.put('orders', order);
+            } catch (e) {
+                console.error('訂單儲存失敗', e);
+                flash('⚠ 訂單儲存失敗，請重試');
+                return;
+            }
+            hideOverlay();
+            flash(`✓ 收款 ${money(c.total)}（${method}）`);
+            // 重置成新單
+            state.cart = []; state.discount = null; state.payMethod = null; state.cashReceived = 0;
+            const firstCat = visibleSorted(state.menu.categories)[0];
+            if (firstCat) state.activeCat = firstCat.id;  // 跳回第一個（未停售）分類
+            state.orderSeq++;
+            saveOrderSeq();   // 持久化下一個單號到 meta，reload/重開不會被重置
+            // 單號顯示、分類列、商品網格、購物車皆由 petite-vue 反應式更新
+            // 手機版分類列捲回最左，讓「優惠餐」可見
+            const catsEl = $('#cats');
+            if (catsEl) catsEl.scrollLeft = 0;
+            // 商品區也捲回頂端
+            const menuEl = document.querySelector('.menu');
+            if (menuEl) menuEl.scrollTop = 0;
+        }
+
+        // ========== 訂單單號（每日重置、持久化於 meta）==========
+        // 啟動時載入：同一天接續、跨日（或無記錄）歸 1。state.orderSeq = 下一筆的當日序號。
+        async function loadOrderSeq() {
+            let rec = null;
+            try { rec = await DB.get('meta', 'orderSeq'); } catch (e) { }
+            const today = localDateStr(new Date());
+            if (rec && rec.date === today) {
+                state.orderDate = today;
+                state.orderSeq = rec.seq || 1;
+            } else {
+                state.orderDate = today;
+                state.orderSeq = 1;
+            }
+        }
+        function saveOrderSeq() {
+            DB.put('meta', { key: 'orderSeq', date: state.orderDate, seq: state.orderSeq })
+                .catch(e => console.error('單號儲存失敗', e));
+        }
+        // 跨日檢查：若 state.orderDate 不是今天，當日序號歸 1
+        function ensureOrderDay() {
+            const today = localDateStr(new Date());
+            if (state.orderDate !== today) { state.orderDate = today; state.orderSeq = 1; }
+        }
+
+        // ========== 彈窗顯隱 ==========
+        function showOverlay() {
+            $('#overlay').classList.add('show');
+            $('#cartBar').style.visibility = 'hidden';  // 避免底部 bar 擋住彈窗按鈕
+        }
+        function hideOverlay() {
+            $('#overlay').classList.remove('show');
+            $('#cartBar').style.visibility = '';
+            state.sheet = null;   // 關閉 petite-vue 彈窗，恢復顯示舊式 #sheet（給後台等尚未轉的彈窗用）
+        }
+        $('#overlay').onclick = e => { if (e.target.id === 'overlay') hideOverlay(); };
+
+        // ========== Toast ==========
+        let toastTimer;
+        function flash(msg) {
+            const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+        }
+
+        // ========== 其他綁定 ==========
+        // 手機：底部 bar 開關購物車面板
+        function openCartPanel() {
+            if (!state.cart.length) { flash('購物車是空的'); return; }
+            $('#cart').classList.add('open');
+            $('#scrim').classList.add('show');
+        }
+        function closeCartPanel() {
+            $('#cart').classList.remove('open');
+            $('#scrim').classList.remove('show');
+        }
+        // 購物車面板遮罩仍走舊式綁定（scrim 不在 petite-vue 模板內）
+        $('#scrim').onclick = closeCartPanel;
+        // cartBar / cartHandle / clearBtn / checkoutBtn 改由 petite-vue @click 處理（見模板）
+
+        // ========== 菜單：載入 / 儲存 / 編輯（後台可編輯菜單）==========
+        const genId = p => p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+        // 正規化排序：依 sort 排好後重編連續索引，確保上下移動可靠、無重複 sort
+        function sortMenu() {
+            state.menu.categories.sort(bySort).forEach((c, i) => {
+                c.sort = i;
+                (c.items || []).sort(bySort).forEach((it, j) => it.sort = j);
+            });
+            (state.menu.modifiers || []).sort(bySort).forEach((m, i) => m.sort = i);
+            (state.menu.discounts || []).sort(bySort).forEach((d, i) => d.sort = i);
+        }
+
+        // 確保目前選中的分類是「存在且未停售」的，否則跳到第一個可見分類
+        function ensureActiveCat() {
+            const cur = state.menu.categories.find(c => c.id === state.activeCat && !c.hidden);
+            if (!cur) { const f = visibleSorted(state.menu.categories)[0]; state.activeCat = f ? f.id : null; }
+        }
+
+        // 從 menu store 載入菜單；DB 為空則用出廠 MENU 種子寫入（菜單存活契約：永不留空）
+        async function loadMenu() {
+            let cats, mods, discs, config;
+            try {
+                cats = await DB.get('menu', 'categories');
+                mods = await DB.get('menu', 'modifiers');
+                discs = await DB.get('menu', 'discounts');
+                config = await DB.get('menu', 'config');
+            } catch (e) { }
+            if (cats && Array.isArray(cats.list) && cats.list.length) {
+                state.menu = {
+                    categories: cats.list,
+                    modifiers: (mods && mods.list) || [],
+                    discounts: (discs && discs.list) || [],
+                    config: config ? { creditSidePrice: config.creditSidePrice, misoItemId: config.misoItemId } : clone(MENU.config),
+                };
+            } else {
+                state.menu = clone(MENU);
+                await persistMenu();   // 種子寫入
+            }
+            sortMenu();
+            ensureActiveCat();
+        }
+
+        // 把 state.menu 寫回 menu store（四份文件）。寫前 clone 脫 proxy（避免 DataCloneError）
+        async function persistMenu() {
+            const m = clone(state.menu);
+            await DB.put('menu', { key: 'categories', list: m.categories });
+            await DB.put('menu', { key: 'modifiers', list: m.modifiers });
+            await DB.put('menu', { key: 'discounts', list: m.discounts });
+            await DB.put('menu', { key: 'config', creditSidePrice: m.config.creditSidePrice, misoItemId: m.config.misoItemId });
+        }
+
+        // ── 停售/復售（取代刪除，保護歷史）──
+        async function toggleHidden(kind, id, catId) {
+            if (kind === 'category') { const c = state.menu.categories.find(x => x.id === id); if (c) c.hidden = !c.hidden; ensureActiveCat(); }
+            else if (kind === 'item') { const c = state.menu.categories.find(x => x.id === catId); const it = c && (c.items || []).find(i => i.id === id); if (it) it.hidden = !it.hidden; }
+            else if (kind === 'modifier') { const m = state.menu.modifiers.find(x => x.id === id); if (m) m.hidden = !m.hidden; }
+            else if (kind === 'discount') { const d = state.menu.discounts.find(x => x.id === id); if (d) { d.hidden = !d.hidden; if (d.hidden && state.discount && state.discount.id === id) state.discount = null; } }
+            await persistMenu();
+        }
+
+        // ── 上下移動（交換 sort 後正規化）──
+        async function moveInList(list, id, dir) {
+            const sorted = (list || []).slice().sort(bySort);
+            const idx = sorted.findIndex(x => x.id === id);
+            const j = idx + dir;
+            if (idx < 0 || j < 0 || j >= sorted.length) return;
+            const a = sorted[idx], b = sorted[j];
+            const t = a.sort; a.sort = b.sort; b.sort = t;
+            sortMenu(); await persistMenu();
+        }
+        function moveCategory(id, dir) { return moveInList(state.menu.categories, id, dir); }
+        function moveItem(catId, id, dir) { const c = state.menu.categories.find(x => x.id === catId); if (c) return moveInList(c.items, id, dir); }
+        function moveModifier(id, dir) { return moveInList(state.menu.modifiers, id, dir); }
+        function moveDiscount(id, dir) { return moveInList(state.menu.discounts, id, dir); }
+
+        // ── 分類 新增/編輯 ──
+        function addCategory() {
+            state.editCat = { isNew: true, id: genId('c'), name: '', sort: state.menu.categories.length, hidden: false };
+            state.sheet = 'editCat'; showOverlay();
+        }
+        function editCategory(cat) {
+            state.editCat = { isNew: false, id: cat.id, name: cat.name, sort: cat.sort || 0, hidden: !!cat.hidden };
+            state.sheet = 'editCat'; showOverlay();
+        }
+        async function saveCategory() {
+            const e = state.editCat;
+            const name = (e.name || '').toString().trim();
+            if (!name) { flash('請輸入分類名稱'); return; }
+            if (e.isNew) state.menu.categories.push({ id: e.id, name, sort: e.sort, hidden: false, items: [] });
+            else { const c = state.menu.categories.find(x => x.id === e.id); if (c) { c.name = name; } }
+            sortMenu(); await persistMenu(); hideOverlay(); flash(e.isNew ? '已新增分類' : '已儲存');
+        }
+
+        // ── 品項 新增/編輯 ──
+        function addItem(cat) {
+            state.editMenuItem = { isNew: true, id: genId('p'), categoryId: cat.id, name: '', price: 0, modifierIds: [], sideCredit: 0, creditEligible: false, isMiso: false, sort: (cat.items ? cat.items.length : 0), hidden: false };
+            state.sheet = 'editMenuItem'; showOverlay();
+        }
+        function editItem(cat, item) {
+            state.editMenuItem = { isNew: false, id: item.id, categoryId: cat.id, name: item.name, price: item.price, modifierIds: [...(item.modifierIds || [])], sideCredit: item.sideCredit || 0, creditEligible: !!item.creditEligible, isMiso: !!item.isMiso, sort: item.sort || 0, hidden: !!item.hidden };
+            state.sheet = 'editMenuItem'; showOverlay();
+        }
+        async function saveMenuItem() {
+            const e = state.editMenuItem;
+            const name = (e.name || '').toString().trim();
+            if (!name) { flash('請輸入品項名稱'); return; }
+            const price = parseInt(e.price) || 0;
+            if (price < 0) { flash('價格不可為負'); return; }
+            const cat = state.menu.categories.find(c => c.id === e.categoryId);
+            if (!cat) { flash('找不到分類'); return; }
+            const data = {
+                name, price,
+                modifierIds: [...(e.modifierIds || [])],
+                sideCredit: parseInt(e.sideCredit) || 0,
+                creditEligible: !!e.creditEligible,
+                isMiso: !!e.isMiso,
+            };
+            if (e.isNew) { cat.items = cat.items || []; cat.items.push({ id: e.id, ...data, sort: e.sort, hidden: false }); }
+            else { const it = (cat.items || []).find(i => i.id === e.id); if (it) Object.assign(it, data); }
+            if (data.isMiso) state.menu.config.misoItemId = e.id;   // 指定「套餐附湯」目標
+            sortMenu(); await persistMenu(); hideOverlay(); flash(e.isNew ? '已新增品項' : '已儲存');
+        }
+
+        // ── 加購 新增/編輯 ──
+        function addModifier() {
+            state.editMod = { isNew: true, id: genId('m'), name: '', price: 0, sideCredit: 0, withMiso: false, sort: state.menu.modifiers.length, hidden: false };
+            state.sheet = 'editMod'; showOverlay();
+        }
+        function editModifier(m) {
+            state.editMod = { isNew: false, id: m.id, name: m.name, price: m.price, sideCredit: m.sideCredit || 0, withMiso: !!m.withMiso, sort: m.sort || 0, hidden: !!m.hidden };
+            state.sheet = 'editMod'; showOverlay();
+        }
+        async function saveModifier() {
+            const e = state.editMod;
+            const name = (e.name || '').toString().trim();
+            if (!name) { flash('請輸入加購名稱'); return; }
+            const data = { name, price: parseInt(e.price) || 0, sideCredit: parseInt(e.sideCredit) || 0, withMiso: !!e.withMiso };
+            if (e.isNew) state.menu.modifiers.push({ id: e.id, ...data, sort: e.sort, hidden: false });
+            else { const m = state.menu.modifiers.find(x => x.id === e.id); if (m) Object.assign(m, data); }
+            sortMenu(); await persistMenu(); hideOverlay(); flash(e.isNew ? '已新增加購' : '已儲存');
+        }
+
+        // ── 折扣 新增/編輯 ──
+        function addDiscount() {
+            state.editDisc = { isNew: true, id: genId('d'), label: '', type: 'percent', value: 0, sort: state.menu.discounts.length, hidden: false };
+            state.sheet = 'editDisc'; showOverlay();
+        }
+        function editDiscount(d) {
+            state.editDisc = { isNew: false, id: d.id, label: d.label, type: d.type || 'percent', value: d.value || 0, sort: d.sort || 0, hidden: !!d.hidden };
+            state.sheet = 'editDisc'; showOverlay();
+        }
+        async function saveDiscount() {
+            const e = state.editDisc;
+            const label = (e.label || '').toString().trim();
+            if (!label) { flash('請輸入折扣名稱'); return; }
+            const data = { label, type: e.type, value: parseInt(e.value) || 0 };
+            if (e.isNew) state.menu.discounts.push({ id: e.id, ...data, sort: e.sort, hidden: false });
+            else { const d = state.menu.discounts.find(x => x.id === e.id); if (d) Object.assign(d, data); }
+            sortMenu(); await persistMenu(); hideOverlay(); flash(e.isNew ? '已新增折扣' : '已儲存');
+        }
+
+        // ── 還原原廠菜單（逃生門）──
+        function confirmRestoreMenu() { state.confirmRestore = true; state.sheet = 'restoreMenu'; showOverlay(); }
+        async function restoreMenu() {
+            state.menu = clone(MENU);
+            sortMenu(); await persistMenu(); ensureActiveCat();
+            hideOverlay(); flash('已還原原廠菜單');
+        }
+
+        // 模擬離線切換（點網路狀態徽章）
+        // ========== 後台：切換（每次都需密碼）==========
+        const ADMIN_PASSWORD = '755935';
+        // 後台分頁定義（模板 v-for 取用）
+        const ADMIN_TABS = [
+            { id: 'ingredients', name: '庫存管理' },
+            { id: 'menu', name: '菜單' },
+            { id: 'orders', name: '訂單' },
+            { id: 'daily', name: '日報' },
+            { id: 'monthly', name: '月報' },
+            { id: 'backup', name: '備份' },
+        ];
+        // 菜單分頁子頁籤
+        const MENU_TABS = [
+            { id: 'products', name: '商品' },
+            { id: 'modifiers', name: '加購' },
+            { id: 'discounts', name: '折扣' },
+        ];
+
+        // 後台登入彈窗（petite-vue：模板見 #overlay 內 v-if="state.sheet==='password'"）
+        function promptAdminPassword() {
+            // 購物車還有未結帳品項 → 先警告（進後台會清空），確認後才清掉再詢問密碼
+            if (state.cart.length) { state.sheet = 'enterAdminWarn'; showOverlay(); return; }
+            openPasswordSheet();
+        }
+        function openPasswordSheet() {
+            state.pw = '';
+            state.pwErr = false;
+            state.sheet = 'password';
+            showOverlay();
+        }
+        // 警告彈窗按「是」：清空購物車後再詢問密碼
+        function enterAdminAfterClear() {
+            state.cart = []; state.discount = null; state.payMethod = null; state.cashReceived = 0;
+            openPasswordSheet();
+        }
+
+        function adminUnlock() {
+            if (state.pw === ADMIN_PASSWORD) {
+                hideOverlay();
+                openAdmin();
+            } else {
+                state.pwErr = true;
+                state.pw = '';
+            }
+        }
+
+        // 進入後台（密碼通過後呼叫）：切畫面 + 載入目前分頁內容
+        function openAdmin() {
+            state.screen = 'admin';
+            setAdminTab(state.adminTab || 'ingredients');
+        }
+
+        function setScreen(s) { state.screen = s; }
+
+        // 切換後台分頁：每個 render* 只負責把資料載入反應式 state，畫面全由 petite-vue 模板產生。
+        function setAdminTab(tab) {
+            state.adminTab = tab;
+            if (tab === 'ingredients') renderIngredients();
+            else if (tab === 'menu') { /* state.menu 已於啟動載入，直接由模板反應式呈現 */ }
+            else if (tab === 'orders') renderOrders();
+            else if (tab === 'daily') renderDaily();
+            else if (tab === 'monthly') renderMonthly();
+            else if (tab === 'backup') renderBackup();
+        }
+
+        // ========== 庫存管理 ==========
+        const STOCK_CATEGORIES = [
+            { id: 'food', name: '食材' },
+            { id: 'pack', name: '包材' },
+            { id: 'other', name: '其他' },
+        ];
+        const VENDORS = ['急便鮮', '網購', '永豐', '其他'];
+
+        // 載入庫存到反應式 state（庫存分頁的 petite-vue 模板會自動重繪）
+        async function loadIngredients() {
+            let list;
+            try { list = await DB.getAll('ingredients') || []; }
+            catch (e) { list = []; }
+            list.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+            state.ingredients = list;
+        }
+
+        // 庫存分頁渲染 = 載入資料即可（畫面由 #admin 內 v-if="state.adminTab==='ingredients'" 模板反應式產生）
+        async function renderIngredients() {
+            await loadIngredients();
+        }
+
+        // 依分類分組（沒設分類的歸到「食材」），供模板 v-for 取用
+        function groupIngredients() {
+            const groups = {};
+            STOCK_CATEGORIES.forEach(c => groups[c.id] = []);
+            state.ingredients.forEach(i => {
+                const cat = groups[i.category] ? i.category : 'food';
+                groups[cat].push(i);
+            });
+            return STOCK_CATEGORIES.map(c => ({ id: c.id, name: c.name, items: groups[c.id] }));
+        }
+
+        function toggleCat(id) { state.collapsedCats[id] = !state.collapsedCats[id]; }
+
+        // 刪除食材確認彈窗（petite-vue：v-if="state.sheet==='delIng'"；iOS PWA 不支援原生 confirm）
+        function confirmDeleteIng(ing) {
+            state.delIng = ing;
+            state.sheet = 'delIng';
+            showOverlay();
+        }
+
+        async function deleteIngredient() {
+            try { await DB.delete('ingredients', state.delIng.id); }
+            catch (e) { console.error('刪除失敗', e); flash('⚠ 刪除失敗'); return; }
+            hideOverlay();
+            renderIngredients();
+            flash('已刪除');
+        }
+
+        // 短日期格式：6/26 14:30（台灣時區；當天顯示「今天 HH:MM」）
+        function fmtShort(iso) {
+            const p = shopParts(iso);
+            const hm = `${p.hour}:${p.minute}`;
+            if (shopDateStr(iso) === shopDateStr(new Date())) return `今天 ${hm}`;
+            return `${+p.month}/${+p.day} ${hm}`;
+        }
+
+        async function adjustIng(id, delta) {
+            const ing = state.ingredients.find(i => i.id === id);
+            if (!ing) return;
+            ing.qty = Math.max(0, Math.round((ing.qty + delta) * 10) / 10);
+            ing.updatedAt = new Date().toISOString();
+            await DB.put('ingredients', { ...ing });  // 反應式 proxy → 存檔前轉純物件
+            renderIngredients();
+        }
+
+        // 同分類內上移/下移：與相鄰品項交換 sort 值
+        async function moveIng(id, dir) {
+            const ing = state.ingredients.find(i => i.id === id);
+            if (!ing) return;
+            const cat = STOCK_CATEGORIES.find(c => c.id === ing.category) ? ing.category : 'food';
+            // 取同分類、依目前順序排列
+            const sameCat = state.ingredients
+                .filter(i => (STOCK_CATEGORIES.find(c => c.id === i.category) ? i.category : 'food') === cat)
+                .sort((a, b) => (a.sort || 0) - (b.sort || 0));
+            const idx = sameCat.findIndex(i => i.id === id);
+            const swapIdx = idx + dir;
+            if (swapIdx < 0 || swapIdx >= sameCat.length) return;
+            // 交換 sort
+            const a = sameCat[idx], b = sameCat[swapIdx];
+            const tmp = a.sort; a.sort = b.sort; b.sort = tmp;
+            await DB.put('ingredients', { ...a });  // 反應式 proxy → 存檔前轉純物件
+            await DB.put('ingredients', { ...b });
+            renderIngredients();
+        }
+
+        // 新增/編輯食材彈窗（petite-vue：模板見 #overlay 內 v-if="state.sheet==='editIng'"）
+        // 把欄位複製成純物件存進 state.editIng，用 v-model 雙向綁定；存檔前才寫回 DB。
+        function editIngredient(ing) {
+            state.editIng = ing
+                ? { isNew: false, id: ing.id, name: ing.name, qty: ing.qty, unit: ing.unit, safeQty: ing.safeQty, vendor: ing.vendor || VENDORS[0], category: ing.category || 'food', sort: ing.sort }
+                : { isNew: true, id: 'ing_' + Date.now(), name: '', qty: 0, unit: '份', safeQty: 0, vendor: VENDORS[0], category: 'food', sort: state.ingredients.length };
+            state.sheet = 'editIng';
+            showOverlay();
+        }
+
+        async function saveIngredient() {
+            const e = state.editIng;
+            const name = (e.name || '').toString().trim();
+            if (!name) { flash('請輸入名稱'); return; }
+            const rec = {
+                id: e.id, name,
+                category: e.category || 'food',
+                vendor: e.vendor || VENDORS[0],
+                qty: parseFloat(e.qty) || 0,
+                unit: (e.unit || '').toString().trim() || '份',
+                safeQty: parseFloat(e.safeQty) || 0,
+                sort: e.sort,
+                updatedAt: new Date().toISOString(),
+            };
+            await DB.put('ingredients', rec);
+            hideOverlay();
+            renderIngredients();   // 重載 state.ingredients
+            flash(e.isNew ? '已新增品項' : '已儲存');
+        }
+
+        // ========== 訂單管理（petite-vue：模板見 #admin 內 v-if="state.adminTab==='orders'"）==========
+        // 渲染 = 載入訂單到反應式 state，畫面由模板產生
+        async function renderOrders() {
+            await loadOrdersToState();
+        }
+
+        // 訂單列表用：時間字串、品項摘要
+        function orderTime(o) { return shopDateTime(o.paidAt); }
+        function orderSummary(o) {
+            return o.items.filter(it => it.unitPrice > 0)
+                .map(it => `${it.name}${it.qty > 1 ? `×${it.qty}` : ''}`).join('、');
+        }
+
+        // 開啟刪除訂單確認彈窗（petite-vue：v-if="state.sheet==='delOrders'"）
+        function confirmDeleteOrders(ids) {
+            state.delOrderIds = ids;
+            state.sheet = 'delOrders';
+            showOverlay();
+        }
+
+        async function deleteOrders() {
+            const ids = state.delOrderIds;
+            try {
+                for (const id of ids) { await DB.delete('orders', id); }
+            } catch (e) { console.error('刪除訂單失敗', e); flash('⚠ 刪除失敗'); return; }
+            state.orderSel = state.orderSel.filter(id => !ids.includes(id));
+            hideOverlay();
+            await loadOrdersToState();
+            flash(`已刪除 ${ids.length} 筆訂單`);
+        }
+
+        // ========== 報表共用：載入訂單、統計 ==========
+        async function loadOrders() {
+            try { return await DB.getAll('orders') || []; }
+            catch (e) { return []; }
+        }
+        async function loadOrdersToState() {
+            state.orders = await loadOrders();
+        }
+        // 統計：完全只讀「訂單快照」，不回查現行菜單（決策 K/L：訂單與菜單解耦）
+        // → 改名/改價/停售/刪欄都不影響歷史；改錯字後新舊名各自一列，視為兩品項。
+        function summarize(orders) {
+            const total = orders.reduce((s, o) => s + o.total, 0);
+            const count = orders.length;
+            const avg = count ? Math.round(total / count) : 0;
+            const byPay = {};
+            orders.forEach(o => { byPay[o.paymentLabel] = (byPay[o.paymentLabel] || 0) + o.total; });
+            // 產品銷售量：只統計實際賣過的（不再補「賣 0 份」清單）
+            const itemQty = {};
+            orders.forEach(o => o.items.forEach(it => {
+                if (it.unitPrice === 0) return; // 跳過 0 元附湯
+                itemQty[it.name] = (itemQty[it.name] || 0) + it.qty;
+            }));
+            const products = Object.entries(itemQty).sort((a, b) => b[1] - a[1]);
+            // 加購統計：優先讀訂單內的加購快照 mods[]；舊資料無快照時退回 modifierIds 查現行菜單（相容用）
+            const modQty = {};
+            orders.forEach(o => o.items.forEach(it => {
+                if (Array.isArray(it.mods) && it.mods.length) {
+                    it.mods.forEach(m => { modQty[m.name] = (modQty[m.name] || 0) + it.qty; });
+                } else if (Array.isArray(it.modifierIds)) {
+                    it.modifierIds.forEach(mid => { const m = modById(mid); if (m) modQty[m.name] = (modQty[m.name] || 0) + it.qty; });
+                }
+            }));
+            const mods = Object.entries(modQty).sort((a, b) => b[1] - a[1]);
+            const modTotal = mods.reduce((s, [, q]) => s + q, 0);
+            return { total, count, avg, byPay, products, mods, modTotal };
+        }
+
+        // 沿用舊名；實作已收斂到 shopDateStr（台灣時區，與裝置時區無關）
+        function localDateStr(d) { return shopDateStr(d); }
+
+        // ========== 日報 / 月報（petite-vue：模板見 #admin 內 v-if adminTab daily/monthly）==========
+        // 渲染 = 載入訂單到反應式 state；日期由 state.dailyDate / state.monthlyMonth 控制（v-model），
+        // 統計結果由 getter dailyVM / monthlyVM（reportVM）反應式產生。
+        async function renderDaily() { await loadOrdersToState(); }
+        async function renderMonthly() { await loadOrdersToState(); }
+
+        // 篩出某日的訂單（日界線固定在台灣午夜，與裝置時區無關）
+        function ordersOfDay(orders, dateStr) {
+            return orders.filter(o => shopDateStr(o.paidAt) === dateStr);          // dateStr：YYYY-MM-DD
+        }
+        // 篩出某月的訂單（月界線固定在台灣）
+        function ordersOfMonth(orders, monthStr) {
+            return orders.filter(o => shopDateStr(o.paidAt).slice(0, 7) === monthStr);  // monthStr：YYYY-MM
+        }
+
+        // 報表 view-model：把 summarize 結果整理成模板可直接 v-for 的列（含長條寬度%）
+        function reportVM(orders) {
+            const s = summarize(orders);
+            const maxPay = Math.max(...Object.values(s.byPay), 1);
+            const payRows = Object.entries(s.byPay).map(([label, amt]) => ({ label, amt, w: amt / maxPay * 100 }));
+            const sold = s.products.filter(([, q]) => q > 0);
+            const zero = s.products.filter(([, q]) => q === 0);
+            const maxProd = Math.max(...sold.map(([, q]) => q), 1);
+            const soldRows = sold.map(([name, qty]) => ({ name, qty, w: qty / maxProd * 100 }));
+            const zeroRows = zero.map(([name]) => name);
+            const maxMod = Math.max(...s.mods.map(([, q]) => q), 1);
+            const modRows = s.mods.map(([name, qty]) => ({ name, qty, w: qty / maxMod * 100, pct: s.modTotal ? Math.round(qty / s.modTotal * 100) : 0 }));
+            return {
+                total: s.total, count: s.count, avg: s.avg, hasOrders: orders.length > 0,
+                payRows, soldRows, zeroRows, modRows, modTotal: s.modTotal, hasMods: s.mods.length > 0,
+            };
+        }
+
+        // ========== 資料備份（匯出/匯入）==========
+        const BACKUP_VERSION = 2;   // v2 起含菜單（menu）
+
+        // 備份分頁（petite-vue：模板見 #admin 內 v-if="state.adminTab==='backup'"）
+        // 渲染 = 載入訂單/食材/上次備份時間到 state，畫面由模板產生
+        async function renderBackup() {
+            await loadOrdersToState();
+            await loadIngredients();
+            try { const m = await DB.get('meta', 'lastBackup'); state.lastBackup = m ? m.value : null; }
+            catch (e) { state.lastBackup = null; }
+        }
+
+        // iOS（含偽裝成 Mac 的 iPadOS）：<a download> 不被支援，點了只會在瀏覽器開啟 JSON、無法存檔
+        const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        async function exportBackup() {
+            try {
+                const orders = await loadOrders();
+                const ings = await DB.getAll('ingredients') || [];
+                const payload = {
+                    app: 'sawakawaya_pos',
+                    version: BACKUP_VERSION,
+                    exportedAt: new Date().toISOString(),
+                    orders,
+                    ingredients: ings,
+                    menu: clone(state.menu),   // 菜單一起帶出（換手機/還原都靠它）
+                };
+                const json = JSON.stringify(payload, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const ts = shopStamp(new Date());   // 台灣時間（與畫面一致，不再用 UTC）
+                const filename = `澤川屋備份_${ts}.json`;
+
+                // iOS：改用「分享」表單（存到「檔案」App／AirDrop／傳給另一支手機），因 a.download 無效
+                if (IS_IOS && navigator.canShare) {
+                    const file = new File([blob], filename, { type: 'application/json' });
+                    if (navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({ files: [file], title: '澤川屋備份' });
+                        } catch (err) {
+                            if (err && err.name === 'AbortError') return;   // 使用者取消分享，不算失敗
+                            throw err;
+                        }
+                        await DB.put('meta', { key: 'lastBackup', value: new Date().toISOString() });
+                        flash('✓ 備份已分享');
+                        renderBackup();
+                        return;
+                    }
+                }
+
+                // 桌機 / Android：<a download> 直接下載
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                await DB.put('meta', { key: 'lastBackup', value: new Date().toISOString() });
+                flash('✓ 備份檔已產生');
+                renderBackup();
+            } catch (e) {
+                console.error('匯出失敗', e);
+                flash('⚠ 匯出失敗');
+            }
+        }
+
+        // 匯入只保留「覆蓋（清空重建）」一種模式（單寫入模型，無需併單）
+        function triggerImport() {
+            const f = $('#bkFile');
+            f.value = '';
+            f.onchange = handleImportFile;
+            f.click();
+        }
+
+        async function handleImportFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                // 接受新識別碼 sawakawaya_pos，及改名前的舊備份 zekawaya_pos（向後相容，勿移除）
+                if ((data.app !== 'sawakawaya_pos' && data.app !== 'zekawaya_pos') || !Array.isArray(data.orders)) {
+                    flash('⚠ 檔案格式不對'); return;
+                }
+                const oCount = data.orders.length, iCount = (data.ingredients || []).length;
+                // 菜單品項數（沒帶菜單顯示 0，匯入時會補植出廠預設）
+                const mCount = (data.menu && Array.isArray(data.menu.categories))
+                    ? data.menu.categories.reduce((s, c) => s + ((c.items || []).length), 0) : 0;
+                // iOS PWA 會封鎖原生 confirm()，故改用自訂確認彈窗
+                confirmImport(data, oCount, iCount, mCount);
+            } catch (err) {
+                console.error('匯入失敗', err);
+                flash('⚠ 匯入失敗，檔案可能損壞');
+            }
+        }
+
+        // 匯入確認彈窗（petite-vue：v-if="state.sheet==='import'"；iOS PWA 不支援原生 confirm）
+        function confirmImport(data, oCount, iCount, mCount) {
+            state.importInfo = { data, oCount, iCount, mCount };
+            state.sheet = 'import';
+            showOverlay();
+        }
+
+        async function doImport() {
+            const { oCount, iCount } = state.importInfo;
+            // ⚠ state.importInfo.data 已被 petite-vue 包成反應式 Proxy，structured-clone 無法複製 →
+            //   DB.put 會丟 DataCloneError。匯入資料本來就是 JSON，用 round-trip 深拷成純物件一次脫殼。
+            const data = JSON.parse(JSON.stringify(state.importInfo.data));
+            try {
+                // 覆蓋：先清空訂單、食材、菜單，再照檔案重建
+                await clearStore('orders');
+                await clearStore('ingredients');
+                await clearStore('menu');
+                for (const o of data.orders) await DB.put('orders', o);
+                for (const ing of (data.ingredients || [])) await DB.put('ingredients', ing);
+                // 菜單存活契約：檔案有帶菜單就寫入；沒帶就用出廠預設補植（永不留空）
+                if (data.menu && Array.isArray(data.menu.categories) && data.menu.categories.length) {
+                    state.menu = {
+                        categories: data.menu.categories,
+                        modifiers: data.menu.modifiers || [],
+                        discounts: data.menu.discounts || [],
+                        config: data.menu.config || clone(MENU.config),
+                    };
+                } else {
+                    state.menu = clone(MENU);
+                }
+                sortMenu();
+                await persistMenu();
+                ensureActiveCat();
+            } catch (err) {
+                console.error('匯入失敗', err);
+                hideOverlay();
+                flash('⚠ 匯入失敗，檔案可能損壞');
+                return;
+            }
+            hideOverlay();
+            flash(`✓ 已匯入 ${oCount} 筆訂單、${iCount} 項食材`);
+            renderBackup();
+        }
+
+        function clearStore(store) {
+            return new Promise(async (resolve, reject) => {
+                const db = await DB.open();
+                const tx = db.transaction(store, 'readwrite');
+                tx.objectStore(store).clear();
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        // ========== 啟動：petite-vue 掛載整個 App（POS + 後台 + 所有彈窗）==========
+        // 全畫面皆由 petite-vue 模板 + 單一反應式 state 驅動，已無 innerHTML/手動 onclick。
+        const app = {
+            state, money, cartQtyForProduct, hideOverlay,
+            appVersion: APP_VERSION_LABEL,   // 後台備份頁與新版橫幅顯示用
+            changeQty, removeLine,
+            openCartPanel, closeCartPanel, openCheckout,
+            // 彈窗用常數（模板 v-for 取用）
+            PAD_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '清除', '0', '確定'],
+            CASHPAD_KEYS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '00', '倒退'],
+            PAYS: [{ id: 'cash', ic: '💵', nm: '現金' }, { id: 'linepay', ic: '🟢', nm: 'LINE Pay' }],
+            // 清空購物車（原 clearBtn 行為）
+            clearCart() { if (!state.cart.length) return; state.cart = []; state.discount = null; },
+            // 點「有新版本」橫幅 → 重新載入抓最新版（店員手動觸發，不會打斷正在點的單）
+            applyUpdate() { location.reload(); },
+            // 點品項：有加購→開選項彈窗；無加購→直接 +1（由品項自己的 modifierIds 決定）
+            tapItem(item) { const cat = this.currentCat; if (getModifiersFor(item).length) openItemSheet(item, cat); else addSimple(item, cat); },
+            // ── 商品彈窗操作 ──
+            itemQty(d) { const it = state.item; it.qty = Math.max(1, it.qty + d); it.editing = false; clampMods(); },
+            itemQtap() { state.item.editing = true; state.item.qty = 0; },
+            itemKey(k) {
+                const it = state.item;
+                if (k === '清除') it.qty = 0;
+                else if (k === '確定') { it.editing = false; if (it.qty < 1) it.qty = 1; clampMods(); }
+                else it.qty = Math.min(999, it.qty * 10 + parseInt(k));
+            },
+            itemModInc(id) { const it = state.item; if (it.modQty[id] < it.qty) it.modQty[id]++; },
+            itemModDec(id) { const it = state.item; if (it.modQty[id] > 0) it.modQty[id]--; },
+            itemAdd() { if (state.item.qty < 1) state.item.qty = 1; clampMods(); addItemToCart(); hideOverlay(); flash('已加入購物車'); },
+            // ── 結帳彈窗操作 ──
+            setPay(id) { state.payMethod = id; state.cashReceived = 0; },
+            setDisc(id) { state.discount = id === 'none' ? null : state.menu.discounts.find(d => d.id === id); state.cashReceived = 0; },
+            setCash(amt) { state.cashReceived = amt; },
+            cashKey(k) {
+                if (k === '倒退') state.cashReceived = Math.floor(state.cashReceived / 10);
+                else if (k === '00') state.cashReceived = Math.min(99999, state.cashReceived * 100);
+                else state.cashReceived = Math.min(99999, state.cashReceived * 10 + parseInt(k));
+            },
+            completeOrder() { if (this.canConfirm) completeOrder(); },
+            // ── 菜單管理 ──
+            MENU_TABS,
+            addCategory, editCategory, saveCategory,
+            addItem, editItem, saveMenuItem,
+            addModifier, editModifier, saveModifier,
+            addDiscount, editDiscount, saveDiscount,
+            toggleHidden, moveCategory, moveItem, moveModifier, moveDiscount,
+            confirmRestoreMenu, restoreMenu,
+            // 品項編輯：切換某加購是否適用
+            toggleItemModifier(id) { const arr = state.editMenuItem.modifierIds; const i = arr.indexOf(id); if (i >= 0) arr.splice(i, 1); else arr.push(id); },
+            // 顯示用：把 modifierIds 轉成名稱字串（後台品項列摘要）
+            modNames(ids) { return (ids || []).map(id => { const m = modById(id); return m ? m.name : ''; }).filter(Boolean).join('、'); },
+            // 後台菜單列表（含停售項，依 sort）
+            get menuCatsAll() { return state.menu.categories.slice().sort(bySort); },
+            get menuModsAll() { return (state.menu.modifiers || []).slice().sort(bySort); },
+            get menuDiscsAll() { return (state.menu.discounts || []).slice().sort(bySort); },
+            // 折扣顯示文字
+            discText(d) { return d.type === 'percent' ? `打 ${(100 - d.value) / 10} 折（−${d.value}%）` : `折抵 $${d.value}`; },
+            // ── 後台殼 + 庫存管理 ──
+            ADMIN_TABS, STOCK_CATEGORIES, VENDORS,
+            promptAdminPassword, enterAdminAfterClear, adminUnlock, setScreen, setAdminTab, toggleCat,
+            editIngredient, saveIngredient, confirmDeleteIng, deleteIngredient, adjustIng, moveIng, fmtShort,
+            get ingGroups() { return groupIngredients(); },
+            get lowStock() { return state.ingredients.filter(i => i.qty <= i.safeQty); },
+            get lowStockText() { return this.lowStock.map(i => `${i.name}${i.vendor ? `（${i.vendor}）` : ''}`).join('、'); },
+            // ── 訂單 / 報表 / 備份 ──
+            orderTime, orderSummary, confirmDeleteOrders, deleteOrders, triggerImport, exportBackup, doImport,
+            toggleOrderSel(id) { const i = state.orderSel.indexOf(id); if (i >= 0) state.orderSel.splice(i, 1); else state.orderSel.push(id); },
+            toggleOrderDetail(id) { state.openOrders[id] = !state.openOrders[id]; },
+            toggleSelAllOrders() { state.orderSel = (state.orderSel.length === state.orders.length) ? [] : state.orders.map(o => o.id); },
+            get ordersSorted() { return [...state.orders].sort((a, b) => (b.paidAt || '').localeCompare(a.paidAt || '')); },
+            get orderSelCount() { return state.orderSel.length; },
+            get dailyVM() { return reportVM(ordersOfDay(state.orders, state.dailyDate)); },
+            get monthlyVM() { return reportVM(ordersOfMonth(state.orders, state.monthlyMonth)); },
+            get lastBackupText() { return state.lastBackup ? new Date(state.lastBackup).toLocaleString('zh-TW', { timeZone: SHOP_TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '尚未備份過'; },
+            // ── 衍生狀態（getter，反應式追蹤）──
+            // POS 分類列（過濾停售、依 sort）
+            get cats() { return visibleSorted(state.menu.categories); },
+            // 目前分類（若選中的被停售/不存在，退回第一個可見分類）
+            get currentCat() { const c = state.menu.categories.find(x => x.id === state.activeCat && !x.hidden); return c || visibleSorted(state.menu.categories)[0] || null; },
+            // 目前分類的品項（過濾停售、依 sort）
+            get catItems() { const c = this.currentCat; return c ? visibleSorted(c.items) : []; },
+            // 結帳折扣 chips（過濾停售）
+            get discountChips() { return visibleSorted(state.menu.discounts); },
+            // 商品彈窗即時總額（主品×數量 + 各加購×份數）
+            get itemTotal() { const it = state.item; if (!it) return 0; let t = it.basePrice * it.qty; it.mods.forEach(m => { t += m.price * it.modQty[m.id]; }); return t; },
+            // 結帳：單號文字、找零、可否確認收款
+            get orderNoText() { return '#' + String(state.orderSeq).padStart(3, '0'); },
+            get cashChange() { return state.cashReceived - calc().total; },
+            get canConfirm() { return state.payMethod && (state.payMethod !== 'cash' || state.cashReceived >= calc().total); },
+            get totals() { return calc(); },
+            get cartCount() { return state.cart.reduce((s, l) => s + l.qty, 0); },
+            get creditInfo() { return { show: totalSideCredits() > 0, unused: calc().creditsUnused > 0 }; },
+            get discountLabel() { const c = calc(); const L = []; if (c.comboSideDiscount > 0) L.push('套餐小菜'); if (c.orderDiscAmt > 0 && state.discount) L.push(state.discount.label); return L.join('＋'); },
+        };
+        PetiteVue.createApp(app).mount('#root');
+        // 開啟資料庫後載入菜單（DB 為空則種子寫入）與「下一個訂單單號」
+        DB.open()
+            .then(loadMenu)
+            .then(loadOrderSeq)
+            .catch(e => console.error('資料庫開啟失敗', e));
+
+        // ========== 新版偵測（GitHub Pages 無法設 no-cache header，故在前端自偵） ==========
+        // 比對「執行中這份程式被烤進去的 APP_VERSION」vs「線上頁面的 APP_VERSION」。
+        // 用烤進去的版本當基準（而非啟動時抓的線上版），所以連「冷啟動就拿到舊版」也偵測得到。
+        // 偵測到不同 → 亮橫幅，由店員點一下才 reload（不自動重載，避免清掉正在點的單）。
+        (function watchForUpdate() {
+            const RUNNING = APP_VERSION;          // 這份程式自己的版本（CI 注入）
+            let lastCheck = 0;                    // 限流：最多每分鐘真的抓一次
+            const PAGE_URL = location.pathname;   // 例：/pos/ → 由 GitHub Pages 回 index.html
+            // 從線上 HTML 文字中抽出 APP_VERSION（宣告在檔案前段，必為第一個匹配）
+            function extractVersion(html) {
+                const m = html.match(/APP_VERSION\s*=\s*'([^']*)'/);
+                return m ? m[1] : null;
+            }
+            async function check() {
+                if (state.updateReady) return;                 // 已經在提示了，不重複抓
+                if (RUNNING.charAt(0) !== 'v') return;         // 本機開發版（未注入版本戳）不偵測
+                if (Date.now() - lastCheck < 60000) return;    // 一分鐘內不重抓
+                lastCheck = Date.now();
+                try {
+                    // cache:'no-store' 強制走網路、繞過那 10 分鐘 HTTP 快取；再加亂數 query 雙保險
+                    const res = await fetch(PAGE_URL + '?_v=' + Date.now(), { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const live = extractVersion(await res.text());
+                    if (live && live.charAt(0) === 'v' && live !== RUNNING) {
+                        state.latestVersion = live;            // 給橫幅顯示
+                        state.updateReady = true;              // 線上版本變了 → 亮橫幅
+                    }
+                } catch (e) { /* 離線或抓取失敗：保持現狀，不打擾 */ }
+            }
+            // 切回前景 / 視窗取得焦點時才檢查（平時不浪費流量）
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+            window.addEventListener('focus', check);
+            // 啟動後也立刻檢查一次：補捉「開 App 那刻就已是舊版」的情況
+            check();
+        })();
+</script>
+</body>
+
+</html>
